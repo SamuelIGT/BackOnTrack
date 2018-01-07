@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.ufc.samuel.backontrack.LoginActivity">
+
+    <ImageButton
+        android:id="@+id/btn_login"
+        style="@style/SubmitButton"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginStart="80dp"
+        android:contentDescription="@string/cnt_description_login_btn"
+        android:onClick="login"
+        android:src="@drawable/ic_right_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_registration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:paddingStart="48dp"
+        android:paddingEnd="0dp"
+        android:paddingBottom="10dp"
+        android:ems="10"
+        android:hint="@string/hint_login_registration"
+        android:background="@drawable/edit_text_style"
+        android:inputType="number"
+        android:singleLine="false"
+        app:layout_constraintBottom_toTopOf="@+id/editText_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:paddingStart="48dp"
+        android:paddingBottom="10dp"
+        android:paddingEnd="0dp"
+        android:ems="10"
+        android:hint="@string/hint_login_password"
+        android:background="@drawable/edit_text_style"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/btn_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/ic_registration"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/cnt_description_login_profile"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintBottom_toBottomOf="@+id/editText_registration"
+        app:layout_constraintStart_toStartOf="@+id/editText_registration"
+        app:layout_constraintTop_toTopOf="@+id/editText_registration" />
+
+    <ImageView
+        android:id="@+id/ic_password"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/cnt_description_login_password"
+        android:src="@drawable/ic_locked_padlock_outline"
+        app:layout_constraintBottom_toBottomOf="@+id/editText_password"
+        app:layout_constraintStart_toStartOf="@+id/editText_password"
+        app:layout_constraintTop_toTopOf="@+id/editText_password" />
+
+    <TextView
+        android:id="@+id/text_login_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="96dp"
+        android:contentDescription="@string/cnt_description_login_logo"
+        android:fontFamily="@font/comfortaa_bold"
+        android:text="@string/login_app_name"
+        android:textColor="@color/colorAccent"
+        android:textSize="42sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

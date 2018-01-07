@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BackOnTrack</string>
+    <string name="cnt_description_login_btn">botão de logar</string>
+    <string name="hint_login_registration">Matrícula</string>
+    <string name="hint_login_password">Senha</string>
+    <string name="cnt_description_login_profile">icone de uma pessoa</string>
+    <string name="cnt_description_login_password">icone de um cadeado</string>
+    <string name="cnt_description_login_logo">back on track</string>
+    <string name="login_app_name">back on track</string>
+</resources>

@@ -1,4 +1,4 @@
-package br.ufc.samuel.backontrack;
+package br.ufc.samuel.backontrack.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import br.ufc.samuel.backontrack.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
         findViews();
     }
+
 
     private void findViews() {
         edtRegistration = findViewById(R.id.editText_registration);

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#53A7E3</color>
-    <color name="colorPrimaryDark">#4ca2df</color>
+    <color name="colorPrimaryDark">#1a83de</color>
+    <!--<color name="colorPrimaryDark">#4ca2df</color>-->
     <color name="colorAccent">#1C89E8</color>
+    <color name="unfocused_icon">#E5E5E5</color>
+    <color name="PrimaryText">#333333</color>
+    <color name="SecondaryText">#717171</color>
+    <color name="colorTabUnderline">#E7E9EB</color>
 </resources>

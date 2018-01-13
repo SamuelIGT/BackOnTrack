@@ -12,4 +12,14 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="Exercise_TabLabel">Exercícios</string>
     <string name="Calendar_TabLabel">Calendário</string>
+    <string name="LV1_Preferences_Key">1066</string>
+    <string name="LV2_Preferences_Key">1758</string>
+    <string name="LV3_Preferences_Key">1961</string>
+    <string name="isFirstTime_Preferences_Key">1899</string>
+    <string name="LV_STATUS_DOWNLOAD">DOWNLOAD</string>
+    <string name="LV_STATUS_DISABLED">DISABLED</string>
+    <string name="LV_STATUS_ENABLED">ENABLED</string>
+    <string name="ShowcaseScreen_Description">Seu nível atual é destacado por um ícone colorido\n\nToque em um nível desbloqueado para iniciar os exercícios</string>
+    <string name="ShowcaseScreen_Title">Essa é a tela de níveis</string>
+    <string name="LEVEL_NUMBER">LV_NUMBER</string>
 </resources>

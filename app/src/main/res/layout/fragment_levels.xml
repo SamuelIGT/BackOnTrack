@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="30dp"
+    tools:context="br.ufc.samuel.backontrack.fragments.LevelsFragment">
+
+    <ImageButton
+        android:id="@+id/btn_lv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_lv1_inactive"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btn_lv2"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:id="@+id/btn_lv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_lv2_inactive"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="32dp"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:id="@+id/btn_lv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btn_lv2"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_lv3_inactive"
+        android:background="@android:color/transparent"/>
+
+</RelativeLayout>

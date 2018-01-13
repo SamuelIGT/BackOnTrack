@@ -8,4 +8,5 @@
     <color name="PrimaryText">#333333</color>
     <color name="SecondaryText">#717171</color>
     <color name="colorTabUnderline">#E7E9EB</color>
+    <color name="custom_showcase_bg">#d8000000</color>
 </resources>

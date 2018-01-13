@@ -20,6 +20,29 @@
         <item name="tabSelectedTextColor">@color/PrimaryText</item>
     </style>
 
+    <!--_______________-->
+    <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
+        <item name="sv_backgroundColor">@color/custom_showcase_bg</item>
+        <item name="sv_showcaseColor">@color/colorAccent</item>
+        <item name="sv_buttonText">ENTENDI</item>
+        <item name="sv_tintButtonColor">true</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+        <item name="sv_detailTextAppearance">@style/CustomDetail</item>
+    </style>
+
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">roboto</item>
+    </style>
+    <style name="CustomDetail" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">roboto</item>
+
+    </style>
+<!--_______________-->
+
     <style name="SubmitButton" parent="Base.TextAppearance.AppCompat.Button">
         <item name="backgroundTint">@color/colorAccent</item>
     </style>

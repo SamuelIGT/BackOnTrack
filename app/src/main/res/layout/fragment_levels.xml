@@ -2,38 +2,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_marginTop="30dp"
     android:layout_marginBottom="30dp"
     tools:context="br.ufc.samuel.backontrack.fragments.LevelsFragment">
 
-    <ImageButton
-        android:id="@+id/btn_lv1"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_lv1_inactive"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/btn_lv2"
-        android:background="@android:color/transparent"/>
+        android:layout_above="@+id/layout_btn_lv2">
 
-    <ImageButton
-        android:id="@+id/btn_lv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_lv2_inactive"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"/>
+        <ImageButton
+            android:id="@+id/btn_lv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lv1_inactive"
+            android:background="@android:color/transparent"/>
 
-    <ImageButton
-        android:id="@+id/btn_lv3"
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/pgBar_lv1"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            app:cpb_background_progressbar_color="@color/pgBar_background"
+            app:cpb_background_progressbar_width="6dp"
+            app:cpb_progressbar_color="@color/colorAccent"
+            app:cpb_progressbar_width="6dp"
+            android:visibility="invisible"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_btn_lv2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/btn_lv2"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/ic_lv3_inactive"
-        android:background="@android:color/transparent"/>
+        android:layout_marginTop="8dp"
+        android:layout_centerVertical="true">
+
+        <ImageButton
+            android:id="@+id/btn_lv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lv2_inactive"
+            android:background="@android:color/transparent"/>
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/pgBar_lv2"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            app:cpb_background_progressbar_color="@color/pgBar_background"
+            app:cpb_background_progressbar_width="6dp"
+            android:visibility="invisible"
+            app:cpb_progressbar_color="@color/colorAccent"
+            app:cpb_progressbar_width="6dp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/layout_btn_lv2">
+
+        <ImageButton
+            android:id="@+id/btn_lv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lv3_inactive"
+            android:background="@android:color/transparent"/>
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/pgBar_lv3"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            app:cpb_background_progressbar_color="@color/pgBar_background"
+            app:cpb_background_progressbar_width="6dp"
+            android:visibility="invisible"
+            app:cpb_progressbar_color="@color/colorAccent"
+            app:cpb_progressbar_width="6dp" />
+
+    </FrameLayout>
+
+
 
 </RelativeLayout>

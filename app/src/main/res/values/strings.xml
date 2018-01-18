@@ -22,4 +22,6 @@
     <string name="ShowcaseScreen_Description">Seu nível atual é destacado por um ícone colorido\n\nToque em um nível desbloqueado para iniciar os exercícios</string>
     <string name="ShowcaseScreen_Title">Essa é a tela de níveis</string>
     <string name="LEVEL_NUMBER">LV_NUMBER</string>
+    <string name="exercise_videos_path">EXERCISE_VIDEOS_PATH</string>
+    <string name="exercise_videos_rootPath">/exercisesVideos/level</string>
 </resources>

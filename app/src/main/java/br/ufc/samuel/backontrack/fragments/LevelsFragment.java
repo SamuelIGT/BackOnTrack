@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -26,9 +25,10 @@ import com.golshadi.majid.report.exceptions.QueueDownloadInProgressException;
 import com.golshadi.majid.report.listener.DownloadManagerListener;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import br.ufc.samuel.backontrack.ExerciseExecutionActivity;
+import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
 import br.ufc.samuel.backontrack.util.showcase.CustomShowcaseView;
 import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.util.preferences.LevelPreferences;
@@ -44,7 +44,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     private boolean isFirstTime;
     private String[] levelStatus;
     private View rootView;
-    private String currentDownloadingLevel;
+    private int currentDownloadingLevel;
+    private List<Long> downloadsCompleted;
 
     public LevelsFragment() {
         // Required empty public constructor
@@ -96,7 +97,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         }
         for(int i = 0; i <= 2; i++){
             updateLevelStatus(i);
-           // setLevelButtonOnClickListener(i);
+            // setLevelButtonOnClickListener(i);
         }
 
     }
@@ -117,6 +118,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv1_download);
+                    downloadsCompleted = new ArrayList<>();
                     setDownloadLevelButtonClickListener(index);
                 }
                 else {
@@ -131,6 +133,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv2_download);
+                    downloadsCompleted = new ArrayList<>();
+                    setDownloadLevelButtonClickListener(index);
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv2_inactive);
@@ -144,6 +148,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv3_download);
+                    downloadsCompleted = new ArrayList<>();
+                    setDownloadLevelButtonClickListener(index);
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv3_inactive);
@@ -160,7 +166,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         btnLv[index].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentDownloadingLevel = "/exercisesVideos/level"+(index+1)+"/";
+                currentDownloadingLevel = index;
                 progressBar.setVisibility(View.VISIBLE);
 
                 if (ContextCompat.checkSelfPermission(rootView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -171,8 +177,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 } else {
                     Log.d("Tem permissão?  ", "NÃO");
                     // Request permission from the user
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                 }
 
 
@@ -182,14 +187,16 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     }
 
     private void downloadLevel() {
+
         DownloadManagerPro dm = new DownloadManagerPro(rootView.getContext().getApplicationContext());
 
-        dm.init(currentDownloadingLevel, 10, LevelsFragment.this);
+        dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
 
         int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/xrYSKEhvhszK/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
         int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/xrYea9IwZmBP/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+       // int taskToken3 = dm.addTask("ex3", "https://volafile.org/get/xrYea9IwZmBP/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
         try {
-            dm.startQueueDownload(1, QueueSort.oldestFirst);
+            dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.
 
         } catch (QueueDownloadInProgressException e) {
             e.printStackTrace();
@@ -197,7 +204,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     }
 
     private void setLevelButtonClickListener(final int index) {
-       //if the Level is enabled
+        //if the Level is enabled
         if(rootView.getContext().getString(R.string.LV_STATUS_ENABLED).equals(levelStatus[index])){
             btnLv[index].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -247,19 +254,33 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     private void findViews() {
         btnLv = new ImageButton[]{
-                 rootView.findViewById(R.id.btn_lv1),
-                 rootView.findViewById(R.id.btn_lv2),
-                 rootView.findViewById(R.id.btn_lv3)};
+                rootView.findViewById(R.id.btn_lv1),
+                rootView.findViewById(R.id.btn_lv2),
+                rootView.findViewById(R.id.btn_lv3)};
         progressBar = rootView.findViewById(R.id.pgBar_lv1);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        Log.d("Permission_Number: ", ""+requestCode);
         switch (requestCode) {
             case 0:
                 downloadLevel();
         }
+
     }
+
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult();
+        Log.d("Permission_Number: ", ""+requestCode);
+        switch (requestCode) {
+            case 0:
+                //downloadLevel();
+        }
+    }*/
 
 
     //-----------------------------------DOWNLOAD MANAGER--------------------------------------\\
@@ -304,7 +325,23 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     @Override
     public void OnDownloadCompleted(long taskId) {
+        downloadsCompleted.add(taskId);
+        if(downloadsCompleted.size() == 2){
+            //TODO: mudar para forma dinâmica onde o valor 2 seria substituído pelo numero de vídeos diferentes do Nível selecionado.
+            downloadsCompleted = null;
 
+            levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateLevelStatus(currentDownloadingLevel);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    currentDownloadingLevel = -1;
+                }
+            });
+
+        }
     }
 
     @Override

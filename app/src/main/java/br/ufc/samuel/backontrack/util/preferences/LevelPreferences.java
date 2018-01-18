@@ -28,6 +28,14 @@ public class LevelPreferences {
         editor.commit();
     }
 
+/*    public void setExerciseVideosPath(String path){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(context.getString(R.string.exercise_videos_path), path);
+    }
+    public String getExerciseVideosPath(){
+        return preferences.getString(context.getString(R.string.exercise_videos_path), null);
+    }*/
+
     public void setDefaults(boolean isFirstTime){
         SharedPreferences.Editor editor = preferences.edit();
 

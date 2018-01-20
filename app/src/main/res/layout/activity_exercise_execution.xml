@@ -31,14 +31,21 @@
             />
     </android.support.v7.widget.Toolbar>
 
-    <VideoView
-        android:id="@+id/videoView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="256dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_below="@+id/toolbar">
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </FrameLayout>
+
+
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +53,7 @@
         android:layout_above="@+id/layout_chronometer"
         >
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imgView_pgBar_outline"
             android:layout_width="175dp"
             android:layout_height="175dp"
             android:layout_gravity="center"
@@ -62,7 +69,7 @@
             />
 
         <ImageButton
-            android:id="@+id/btn_start"
+            android:id="@+id/btn_pgBar"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_gravity="center"

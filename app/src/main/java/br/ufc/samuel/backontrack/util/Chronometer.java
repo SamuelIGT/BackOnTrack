@@ -1,4 +1,4 @@
-package br.ufc.quixada.backontrack.chronometer;
+package br.ufc.samuel.backontrack.util;
 
 import android.content.Context;
 import android.os.CountDownTimer;

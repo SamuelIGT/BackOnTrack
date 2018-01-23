@@ -10,4 +10,6 @@
     <color name="colorTabUnderline">#E7E9EB</color>
     <color name="custom_showcase_bg">#d8000000</color>
     <color name="pgBar_background">#DCDCDC</color>
+    <color name="colorSuccess">#6FCF97</color>
+    <color name="secondaryTextObjectsDialog">#4F4F4F</color>
 </resources>

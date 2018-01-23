@@ -18,6 +18,7 @@ import android.widget.VideoView;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import br.ufc.samuel.backontrack.fragments.ExerciseStartDialogFragment;
 import br.ufc.samuel.backontrack.util.Chronometer;
 
 import br.ufc.samuel.backontrack.R;
@@ -58,9 +59,16 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
         videoView.seekTo(100);
 
 
+        showExerciseStartDialog();//shows the exercises start dialog
+
         Log.d("Selected Level: ", videopath);
 //        mediaController.show();//shows the Media Controller HUD
 
+    }
+
+    private void showExerciseStartDialog() {
+        ExerciseStartDialogFragment dialogFragment = new ExerciseStartDialogFragment();
+        dialogFragment .show(getSupportFragmentManager(), "Dialog Fragment");
     }
 
     private void initializeVectorDrawableAnimations() {

@@ -191,8 +191,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
         dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
 
-        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/x-EVnrDXHeXE/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
-        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/x-FZxuRMcPo9/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/ypjPFFq6x55u/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
+        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/ypkOqAgOj88f/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
        // int taskToken3 = dm.addTask("ex3", "https://volafile.org/get/xrYea9IwZmBP/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
         try {
             dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.

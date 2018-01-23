@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+    <LinearLayout
+        android:id="@+id/confirmation_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_dialog_confirmation">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="12dp"
+            android:text="Você possui todos esses materiais?"
+            android:textAlignment="center"
+            android:layout_alignParentTop="true"
+            android:textSize="24sp"
+            android:textColor="@color/PrimaryText"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/exercise_start_title"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="56dp"
+            android:buttonTint="@color/colorSuccess"
+            android:checked="true"
+            />
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_meat1"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="56dp"
+            android:buttonTint="@color/colorSuccess"
+            android:checked="true"
+            />
+
+        <CheckBox
+            android:layout_below="@+id/checkbox_meat2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="24dp"
+            android:buttonTint="@color/colorSuccess"
+            android:checked="true"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="42dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/colorSuccess"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/checkbox_meat3"
+            android:textSize="24sp"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="confirmar"/>
+    </LinearLayout>
+</io.codetail.widget.RevealFrameLayout>

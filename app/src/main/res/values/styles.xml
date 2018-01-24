@@ -59,4 +59,13 @@
     <style name="ToolbarColoredBackArrow" parent="AppTheme">
         <item name="android:textColorSecondary">@color/PrimaryText</item>
     </style>
+
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/colorSuccess</item>
+        <item name="android:textColorSecondary">@color/colorDisabled</item>
+    </style>
+
+    <style name="DialogTheme">
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
 </resources>

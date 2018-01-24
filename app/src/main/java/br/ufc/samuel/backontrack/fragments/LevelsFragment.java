@@ -117,8 +117,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    btnLv[index].setImageResource(R.drawable.ic_lv1_download);
                     downloadsCompleted = new ArrayList<>();
+                    btnLv[index].setImageResource(R.drawable.ic_lv1_download);
                     setDownloadLevelButtonClickListener(index);
                 }
                 else {
@@ -132,9 +132,10 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    btnLv[index].setImageResource(R.drawable.ic_lv2_download);
                     downloadsCompleted = new ArrayList<>();
+                    btnLv[index].setImageResource(R.drawable.ic_lv2_download);
                     setDownloadLevelButtonClickListener(index);
+
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv2_inactive);
@@ -147,8 +148,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    btnLv[index].setImageResource(R.drawable.ic_lv3_download);
                     downloadsCompleted = new ArrayList<>();
+                    btnLv[index].setImageResource(R.drawable.ic_lv3_download);
                     setDownloadLevelButtonClickListener(index);
                 }
                 else {
@@ -167,6 +168,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
             @Override
             public void onClick(View view) {
                 currentDownloadingLevel = index;
+                btnLv[index].setEnabled(false);
 
                 if (ContextCompat.checkSelfPermission(rootView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     Log.d("Tem permissão?  ", "SIM");
@@ -331,9 +333,12 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
             levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
 
+
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    btnLv[currentDownloadingLevel].setEnabled(true);
                     updateLevelStatus(currentDownloadingLevel);
                     progressBar.setVisibility(View.INVISIBLE);
                     currentDownloadingLevel = -1;

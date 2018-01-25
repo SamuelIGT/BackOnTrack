@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import br.ufc.samuel.backontrack.fragments.ExerciseStartDialogFragment;
 import br.ufc.samuel.backontrack.fragments.ExitAlertDialogFragment;
+import br.ufc.samuel.backontrack.fragments.FeedbackDialogFragment;
 import br.ufc.samuel.backontrack.util.Chronometer;
 
 import br.ufc.samuel.backontrack.R;
@@ -110,7 +111,8 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     btnPgBar.setImageDrawable(avdStopToPlay);
                     avdStopToPlay.start();//starts the play icon transition.
                     chronometer.stopTimer();
-                    //TODO:Mostrar dialog de finalização.
+                    FeedbackDialogFragment feedbackDialogFragment = new FeedbackDialogFragment();
+                    feedbackDialogFragment.show(getSupportFragmentManager(), "Dialog Feedback");
                     }
                 }
         });

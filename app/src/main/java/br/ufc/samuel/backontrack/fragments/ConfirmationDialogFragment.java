@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -30,7 +31,7 @@ public class ConfirmationDialogFragment extends DialogFragment {
     public ConfirmationDialogFragment() {
     }
 
-    public static ConfirmationDialogFragment newInstance(int centerX, int centerY, int color) {
+    public static ConfirmationDialogFragment newInstance(int centerX, int centerY, int color ) {
         Bundle args = new Bundle();
         args.putInt("cx", centerX);
         args.putInt("cy", centerY);
@@ -82,6 +83,14 @@ public class ConfirmationDialogFragment extends DialogFragment {
 
                     @Override
                     public void onAnimationEnd(Animator animator) {
+
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismiss();
+                            }
+                        }, 700);
 
                         //TODO: fechar fragmento pai e esperar 1 segundo antes de fechar esse.
                     }

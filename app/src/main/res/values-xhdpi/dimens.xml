@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="dialog_height">376dp</dimen>
+    <dimen name="dialog_width">328dp</dimen>
+    <dimen name="dialog_margin_start">16dp</dimen>
+    <dimen name="dialog_margin_end">16dp</dimen>
+</resources>

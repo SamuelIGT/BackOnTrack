@@ -6,13 +6,17 @@
     android:orientation="vertical"
     android:layout_marginTop="30dp"
     android:layout_marginBottom="30dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context="br.ufc.samuel.backontrack.fragments.LevelsFragment">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/layout_btn_lv2">
+        android:layout_above="@+id/layout_btn_lv2"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <ImageButton
             android:id="@+id/btn_lv1"
@@ -30,7 +34,7 @@
             app:cpb_background_progressbar_width="6dp"
             app:cpb_progressbar_color="@color/colorAccent"
             app:cpb_progressbar_width="6dp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </FrameLayout>
 
     <FrameLayout
@@ -39,7 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <ImageButton
             android:id="@+id/btn_lv2"
@@ -66,7 +72,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/layout_btn_lv2">
+        android:layout_below="@+id/layout_btn_lv2"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <ImageButton
             android:id="@+id/btn_lv3"

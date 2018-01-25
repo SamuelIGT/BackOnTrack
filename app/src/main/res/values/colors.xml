@@ -13,4 +13,5 @@
     <color name="colorSuccess">#6FCF97</color>
     <color name="secondaryTextObjectsDialog">#4F4F4F</color>
     <color name="colorDisabled">#D9D9D9</color>
+    <color name="colorAlert">#E7555C</color>
 </resources>

@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import br.ufc.samuel.backontrack.fragments.ExerciseStartDialogFragment;
+import br.ufc.samuel.backontrack.fragments.ExitAlertDialogFragment;
 import br.ufc.samuel.backontrack.util.Chronometer;
 
 import br.ufc.samuel.backontrack.R;
@@ -66,9 +67,19 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().findFragmentByTag("Dialog Exit Alert") == null){
+            ExitAlertDialogFragment exitAlertDialogFragment = new ExitAlertDialogFragment();
+        exitAlertDialogFragment.show(getSupportFragmentManager(), "Dialog Exit Alert");
+        }else{
+            super.onBackPressed();
+        }
+    }
+
     private void showExerciseStartDialog() {
         ExerciseStartDialogFragment dialogFragment = new ExerciseStartDialogFragment();
-        dialogFragment .show(getSupportFragmentManager(), "Dialog Fragment");
+        dialogFragment .show(getSupportFragmentManager(), "Dialog Exercise Start");
     }
 
     private void initializeVectorDrawableAnimations() {

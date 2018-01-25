@@ -3,6 +3,7 @@ package br.ufc.samuel.backontrack.fragments;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -63,12 +64,12 @@ public class ExerciseStartDialogFragment extends DialogFragment {
                         }
 
                         if(checkedCheckboxes == checkBoxesNumber) {
-                            confirm.setBackgroundColor(getResources().getColor(R.color.colorSuccess));
+                            confirm.setBackground(getResources().getDrawable(R.drawable.shape_btn_confirm));
                             confirm.setEnabled(true);
                         }
 
                         else {
-                            confirm.setBackgroundColor(getResources().getColor(R.color.colorDisabled));
+                            confirm.setBackground(getResources().getDrawable(R.drawable.shape_btn_confirm_disabled));
                             confirm.setEnabled(false);
                         }
                     }
@@ -89,7 +90,15 @@ public class ExerciseStartDialogFragment extends DialogFragment {
                         getResources().getColor(R.color.colorSuccess)
                 );
 
-                dialogFrament.show(getActivity().getSupportFragmentManager(), "Dialog confirmation");
+                dialogFrament.show(getActivity().getSupportFragmentManager(), "Dialog Confirmation");
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismiss();
+                    }
+                }, 450);
             }
         });
         confirm.setEnabled(false);

@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -117,7 +119,6 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    downloadsCompleted = new ArrayList<>();
                     btnLv[index].setImageResource(R.drawable.ic_lv1_download);
                     setDownloadLevelButtonClickListener(index);
                 }
@@ -132,7 +133,6 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    downloadsCompleted = new ArrayList<>();
                     btnLv[index].setImageResource(R.drawable.ic_lv2_download);
                     setDownloadLevelButtonClickListener(index);
 
@@ -148,7 +148,6 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                     setLevelButtonClickListener(index);
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
-                    downloadsCompleted = new ArrayList<>();
                     btnLv[index].setImageResource(R.drawable.ic_lv3_download);
                     setDownloadLevelButtonClickListener(index);
                 }
@@ -188,19 +187,49 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     }
 
     private void downloadLevel() {
-        progressBar.setVisibility(View.VISIBLE);
+
+        playProgressBarAnimation(false);
+
         DownloadManagerPro dm = new DownloadManagerPro(rootView.getContext().getApplicationContext());
 
         dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
 
-        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/ypjPFFq6x55u/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
-        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/ypkOqAgOj88f/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/y-5kItz85VCx/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
+        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/y-53N0_bCZvz/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
        // int taskToken3 = dm.addTask("ex3", "https://volafile.org/get/xrYea9IwZmBP/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+        downloadsCompleted = new ArrayList<>();
         try {
             dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.
 
         } catch (QueueDownloadInProgressException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void playProgressBarAnimation(boolean isReversed) {
+        if(isReversed){
+            Animation fadeout = AnimationUtils.loadAnimation(getContext(), R.anim.progressbar_fadeout);
+
+            fadeout.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            progressBar.startAnimation(fadeout);
+        }else {
+            Animation fadein = AnimationUtils.loadAnimation(getContext(), R.anim.progressbar_fadein);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.startAnimation(fadein);
         }
     }
 
@@ -326,6 +355,9 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     @Override
     public void OnDownloadCompleted(long taskId) {
+        if(downloadsCompleted == null){
+            downloadsCompleted = new ArrayList<>();
+        }
         downloadsCompleted.add(taskId);
         if(downloadsCompleted.size() == 2){
             //TODO: mudar para forma dinâmica onde o valor 2 seria substituído pelo numero de vídeos diferentes do Nível selecionado.
@@ -338,9 +370,9 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    playProgressBarAnimation(true);
                     btnLv[currentDownloadingLevel].setEnabled(true);
                     updateLevelStatus(currentDownloadingLevel);
-                    progressBar.setVisibility(View.INVISIBLE);
                     currentDownloadingLevel = -1;
                 }
             });

@@ -2,14 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialogs"
     android:minWidth="@dimen/dialog_width"
     android:minHeight="@dimen/dialog_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/feedback_title"
         android:textSize="24sp"
         android:gravity="center"
@@ -25,29 +29,39 @@
         android:layout_marginTop="32dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/ic_effort_lv_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_weight="1"
             android:src="@drawable/ic_emoticon_5"/>
 
-        <ImageView
+        <ImageButton
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:id="@+id/ic_effort_lv_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_emoticon_4"/>
 
-        <ImageView
+        <ImageButton
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:id="@+id/ic_effort_lv_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_emoticon_3"/>
-        <ImageView
+        <ImageButton
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:id="@+id/ic_effort_lv_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_emoticon_2"/>
-        <ImageView
+        <ImageButton
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:id="@+id/ic_effort_lv_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -63,6 +77,7 @@
         android:layout_marginBottom="16dp">
 
         <TextView
+            android:id="@+id/title_effort_lv_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -72,6 +87,7 @@
             />
 
         <TextView
+            android:id="@+id/title_effort_lv_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -81,6 +97,7 @@
             />
 
         <TextView
+            android:id="@+id/title_effort_lv_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
@@ -90,6 +107,7 @@
             />
 
         <TextView
+            android:id="@+id/title_effort_lv_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -99,6 +117,7 @@
             />
 
         <TextView
+            android:id="@+id/title_effort_lv_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -126,14 +145,14 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:src="@drawable/ic_minor"
-            android:background="@color/colorPrimaryLight"
+            android:background="@drawable/shape_decrease_repetitions"
             />
         <TextView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:background="@color/colorPrimary"
             android:text="0"
             android:gravity="center"
@@ -143,10 +162,10 @@
             android:textAlignment="center"
             />
         <ImageButton
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:src="@drawable/ic_plus"
-            android:background="@color/colorPrimaryLight"
+            android:background="@drawable/shape_increase_repetitions"
             />
 
     </LinearLayout>

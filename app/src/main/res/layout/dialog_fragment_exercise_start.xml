@@ -17,11 +17,12 @@
         android:layout_marginStart="@dimen/dialog_margin_start"
         android:layout_marginEnd="@dimen/dialog_margin_end">
 
-        <RelativeLayout
-            android:id="@+id/layout_check_boxes"
+        <LinearLayout
             android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+        </LinearLayout>
 
             <TextView
                 android:id="@+id/exercise_start_title"
@@ -36,15 +37,20 @@
                 android:textSize="24sp"
                 android:textColor="@color/PrimaryText"/>
 
+        <RelativeLayout
+            android:id="@+id/layout_check_boxes"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <CheckBox
                 android:theme="@style/checkBoxStyle"
                 android:id="@+id/checkbox_meat1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/exercise_start_title"
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:layout_marginTop="24dp"
+
                 android:layout_marginStart="56dp"
                 />
             <TextView
@@ -53,9 +59,9 @@
                 android:layout_toEndOf="@+id/checkbox_meat1"
                 android:layout_alignTop="@+id/checkbox_meat1"
                 android:layout_alignBottom="@+id/checkbox_meat1"
-                android:text="MASSINHA"
-                android:paddingStart="12sp"
-                android:textSize="24sp"
+                android:text="PAPEL COM CÍRCULOS"
+                android:paddingStart="12dp"
+                android:textSize="18sp"
                 android:gravity="center"
                 android:textColor="@color/secondaryTextObjectsDialog"
                 />
@@ -76,14 +82,14 @@
                 android:layout_toEndOf="@+id/checkbox_meat2"
                 android:layout_alignTop="@+id/checkbox_meat2"
                 android:layout_alignBottom="@+id/checkbox_meat2"
-                android:text="LÁPIS"
+                android:text="COPO"
                 android:paddingStart="12sp"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:gravity="center"
                 android:textColor="@color/secondaryTextObjectsDialog"
                 />
 
-            <CheckBox
+           <!-- <CheckBox
                 android:theme="@style/checkBoxStyle"
                 android:id="@+id/checkbox_meat3"
                 android:layout_below="@+id/checkbox_meat2"
@@ -105,16 +111,9 @@
                 android:textSize="24sp"
                 android:gravity="center"
                 android:textColor="@color/secondaryTextObjectsDialog"
-                />
+                />-->
 
         </RelativeLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_checked"
-            android:visibility="invisible"
-            android:layout_gravity="center"/>
 
         <Button
             android:id="@+id/btn_exerciseStart_confirmation"

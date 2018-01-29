@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
-import br.ufc.samuel.backontrack.OnFragmentTouched;
 import br.ufc.samuel.backontrack.R;
 import io.codetail.animation.ViewAnimationUtils;
 
@@ -25,7 +24,6 @@ import io.codetail.animation.ViewAnimationUtils;
 
 public class ConfirmationDialogFragment extends DialogFragment {
 
-    private OnFragmentTouched listener;
     private View rootView;
 
     public ConfirmationDialogFragment() {

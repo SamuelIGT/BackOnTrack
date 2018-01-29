@@ -1,5 +1,9 @@
 package br.ufc.samuel.backontrack.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -34,6 +38,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     private Chronometer chronometer;
     private AnimatedVectorDrawableCompat avdPlayToStop;
     private AnimatedVectorDrawableCompat avdStopToPlay;
+    private ValueAnimator pgBarOutlineAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,8 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     }
 
     private void setUpButtons() {
+        pgBarOutlineAnim = animateDrawableColor(pgBarOutline);
+
         btnPgBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,9 +112,12 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     //btnPgBar.setImageResource(R.drawable.ic_stop);
                     btnPgBar.setImageDrawable(avdPlayToStop);
                     avdPlayToStop.start();//starts the stop icon transition.
+                    pgBarOutlineAnim.start();
                     //TODO: fazer animação da linha externa quando o chronômetro estiver rodando.
                 }else {
                     Log.d("Chrnometer:","is running");
+                    pgBarOutlineAnim.start();
+                    pgBarOutlineAnim.pause();
                     btnPgBar.setImageDrawable(avdStopToPlay);
                     avdStopToPlay.start();//starts the play icon transition.
                     chronometer.stopTimer();
@@ -116,6 +126,34 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     }
                 }
         });
+    }
+
+    private ValueAnimator animateDrawableColor(final ImageView v) {
+        final int color = getResources().getColor(R.color.timerProgressBarOutLineAnimation);
+        final ValueAnimator colorAnim = ObjectAnimator.ofFloat(0f, 1f);
+        colorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float mul = (Float) animation.getAnimatedValue();
+                int alphaColor = adjustAlpha(color, mul);
+                v.getBackground().setColorFilter(alphaColor, PorterDuff.Mode.SRC_ATOP);
+                if (mul == 0.0) {
+                    v.getBackground().setColorFilter(null);
+                }
+            }
+        });
+
+        colorAnim.setDuration(500);
+        colorAnim.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnim.setRepeatCount(-1);
+        return colorAnim;
+    }
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
     }
 
     //Todo: Implementar modo fullscreen.

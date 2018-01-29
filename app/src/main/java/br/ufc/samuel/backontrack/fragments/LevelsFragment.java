@@ -135,7 +135,6 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv2_download);
                     setDownloadLevelButtonClickListener(index);
-
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv2_inactive);
@@ -194,9 +193,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
         dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
 
-        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/zXksb18wveP_/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
-        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/zXlH_2UaeZFU/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
-       // int taskToken3 = dm.addTask("ex3", "https://volafile.org/get/xrYea9IwZmBP/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/zrnq3LDLAwK1/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
+        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/zrofqw-kBxdG/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
         downloadsCompleted = new ArrayList<>();
         try {
             dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.
@@ -207,6 +205,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     }
 
     private void playProgressBarAnimation(boolean isReversed) {
+
         if(isReversed){
             Animation fadeout = AnimationUtils.loadAnimation(getContext(), R.anim.progressbar_fadeout);
 
@@ -218,6 +217,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     progressBar.setVisibility(View.INVISIBLE);
+                    btnLv[currentDownloadingLevel].startAnimation(playLevelTransitionAnimation(false));
                 }
                 @Override
                 public void onAnimationRepeat(Animation animation) {
@@ -230,6 +230,35 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
             Animation fadein = AnimationUtils.loadAnimation(getContext(), R.anim.progressbar_fadein);
             progressBar.setVisibility(View.VISIBLE);
             progressBar.startAnimation(fadein);
+        }
+    }
+
+    private Animation playLevelTransitionAnimation(boolean isAppearing){
+        if(isAppearing){
+            currentDownloadingLevel = -1;
+            return AnimationUtils.loadAnimation(getContext(), R.anim.level_icon_transition_appearing_anim);
+
+        }else {
+
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.level_icon_transition_disappearing_anim);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    updateLevelStatus(currentDownloadingLevel);
+                    btnLv[currentDownloadingLevel].startAnimation(playLevelTransitionAnimation(true));
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            return animation;
         }
     }
 
@@ -302,16 +331,6 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     }
 
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult();
-        Log.d("Permission_Number: ", ""+requestCode);
-        switch (requestCode) {
-            case 0:
-                //downloadLevel();
-        }
-    }*/
-
 
     //-----------------------------------DOWNLOAD MANAGER--------------------------------------\\
 
@@ -362,18 +381,13 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         if(downloadsCompleted.size() == 2){
             //TODO: mudar para forma dinâmica onde o valor 2 seria substituído pelo numero de vídeos diferentes do Nível selecionado.
             downloadsCompleted = null;
-
             levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
-
-
 
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     playProgressBarAnimation(true);
                     btnLv[currentDownloadingLevel].setEnabled(true);
-                    updateLevelStatus(currentDownloadingLevel);
-                    currentDownloadingLevel = -1;
                 }
             });
 

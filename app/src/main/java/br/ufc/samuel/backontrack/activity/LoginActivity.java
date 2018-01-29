@@ -1,5 +1,6 @@
 package br.ufc.samuel.backontrack.activity;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         findViews();
+        animateLogoText(logo);
     }
 
     private void findViews() {
@@ -39,12 +43,13 @@ public class LoginActivity extends AppCompatActivity {
         //calls the ImageView color animation when the focus of the edit text is changed.
         edtRegistration.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                Log.d("Registration Focus: ", b+"");
-                if(b)//if is focused.
+            public void onFocusChange(View view, boolean hasFocus) {
+                Log.d("Registration Focus: ", hasFocus+"");
+                if(hasFocus)//if is focused.
                     animateDrawableColor((ImageView) findViewById(R.id.ic_registration), true); //pass the ImageView that will have the color changed and a boolean that says if it's focused or not.
                 else
-                    animateDrawableColor((ImageView) findViewById(R.id.ic_registration), false);
+                    if(edtRegistration.getText().toString().isEmpty())
+                        animateDrawableColor((ImageView) findViewById(R.id.ic_registration), false);
             }
         });
 
@@ -55,7 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(b)
                     animateDrawableColor((ImageView) findViewById(R.id.ic_password), true);
                 else
-                    animateDrawableColor((ImageView) findViewById(R.id.ic_password), false);
+                    if(edtPassword.getText().toString().isEmpty())
+                        animateDrawableColor((ImageView) findViewById(R.id.ic_password), false);
             }
         });
 
@@ -87,9 +93,6 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             color = getResources().getColor(R.color.unfocused_icon);
         }
-
-
-
         final ValueAnimator colorAnim = ObjectAnimator.ofFloat(0f, 1f);
         colorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -107,7 +110,25 @@ public class LoginActivity extends AppCompatActivity {
         //colorAnim.setRepeatMode(ValueAnimator.REVERSE);
         colorAnim.setRepeatCount(0);
         colorAnim.start();
+    }
 
+    private void animateLogoText(final TextView v) {
+
+        Integer colorFrom = getResources().getColor(R.color.colorAccent);
+        Integer colorTo = getResources().getColor(R.color.color_borg_scale_subtitle);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                v.setTextColor((Integer)animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.setDuration(1000);
+        colorAnimation.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnimation.setRepeatCount(-1);
+        colorAnimation.start();
     }
 
     public int adjustAlpha(int color, float factor) {

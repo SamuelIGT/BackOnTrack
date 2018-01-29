@@ -1,190 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_dialogs"
+    android:background="@drawable/dialog_feedback_background_inset"
     android:minWidth="@dimen/dialog_width"
     android:minHeight="@dimen/dialog_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:text="@string/feedback_title"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="@color/PrimaryText"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/layout_feedback_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="32dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/ic_effort_lv_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_weight="1"
-            android:src="@drawable/ic_emoticon_5"/>
-
-        <ImageButton
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:id="@+id/ic_effort_lv_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_emoticon_4"/>
-
-        <ImageButton
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:id="@+id/ic_effort_lv_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_emoticon_3"/>
-        <ImageButton
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:id="@+id/ic_effort_lv_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_emoticon_2"/>
-        <ImageButton
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:id="@+id/ic_effort_lv_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_emoticon_1"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp">
+        android:background="@drawable/shape_dialogs"
+        android:minWidth="@dimen/dialog_width"
+        android:minHeight="@dimen/dialog_height"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title_effort_lv_5"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:text="Muito\nDifícil"
-            android:textColor="@color/color_borg_scale_subtitle"
-            />
-
-        <TextView
-            android:id="@+id/title_effort_lv_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:text="Difícil"
-            android:textColor="@color/color_borg_scale_subtitle"
-            />
-
-        <TextView
-            android:id="@+id/title_effort_lv_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:textAlignment="center"
-            android:text="Moderado"
-            android:textColor="@color/color_borg_scale_subtitle"
-            />
-
-        <TextView
-            android:id="@+id/title_effort_lv_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:text="Leve"
-            android:textColor="@color/color_borg_scale_subtitle"
-            />
-
-        <TextView
-            android:id="@+id/title_effort_lv_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_weight="1"
-            android:text="Muito\nLeve"
-            android:textColor="@color/color_borg_scale_subtitle"
-            />
-
-    </LinearLayout>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feedback_series_title"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/color_feedback_series_title"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_minor"
-            android:background="@drawable/shape_decrease_repetitions"
-            />
-        <TextView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@color/colorPrimary"
-            android:text="0"
-            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/feedback_title"
             android:textSize="24sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/PrimaryText"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/ic_effort_lv_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_weight="1"
+                android:src="@drawable/ic_emoticon_5"/>
+
+            <ImageButton
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:id="@+id/ic_effort_lv_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_emoticon_4"/>
+
+            <ImageButton
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:id="@+id/ic_effort_lv_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_emoticon_3"/>
+            <ImageButton
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:id="@+id/ic_effort_lv_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_emoticon_2"/>
+            <ImageButton
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:id="@+id/ic_effort_lv_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_emoticon_1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/title_effort_lv_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:text="Muito\nDifícil"
+                android:textColor="@color/color_borg_scale_subtitle"
+                />
+
+            <TextView
+                android:id="@+id/title_effort_lv_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:text="Difícil"
+                android:textColor="@color/color_borg_scale_subtitle"
+                />
+
+            <TextView
+                android:id="@+id/title_effort_lv_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:textAlignment="center"
+                android:text="Moderado"
+                android:textColor="@color/color_borg_scale_subtitle"
+                />
+
+            <TextView
+                android:id="@+id/title_effort_lv_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:text="Leve"
+                android:textColor="@color/color_borg_scale_subtitle"
+                />
+
+            <TextView
+                android:id="@+id/title_effort_lv_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:text="Muito\nLeve"
+                android:textColor="@color/color_borg_scale_subtitle"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feedback_series_title"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/color_feedback_series_title"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_decrease_repetitions"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_minor"
+                android:background="@drawable/shape_decrease_repetitions"
+                />
+            <TextView
+                android:id="@+id/txt_repetitions"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@color/colorPrimary"
+                android:text="0"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:textAlignment="center"
+                />
+            <ImageButton
+                android:id="@+id/btn_increase_repetitions"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_plus"
+                android:background="@drawable/shape_increase_repetitions"
+                />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_button_feedback_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_exclamation"
+            app:backgroundTint="@color/color_feedback_floating_button"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="end"/>
+
+        <Button
+            android:id="@+id/btn_feedback_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_confirm"
+            android:background="@drawable/shape_btn_feedback_confirm"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_feedback_alert"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/card_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="0dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColor="#F2F2F2"
+            android:layout_marginStart="26dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginTop="32dp"
+            android:text="Deseja reportar algo ao seu fisioterapeuta?"
+            android:gravity="center"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:background="@android:color/white"
+            android:hint="Conte-nos o que aconteceu..."
+            android:padding="8dp"
+            android:gravity="start"
+            android:textSize="14sp"
+            android:layout_marginEnd="24dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/card_feedback_alert_button_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CONTINUAR"
+            android:textColor="@color/card_feedback"
+            android:textSize="24sp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/shape_btn_feedback_alert_confirm"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_feedback_confirmation"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/colorSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="0dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView_card_feedback_confirmation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_like"
+            android:layout_marginTop="42dp"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/main_text_card_feedback_confirmation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Parabéns!"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:textAlignment="center"
-            />
-        <ImageButton
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/ic_plus"
-            android:background="@drawable/shape_increase_repetitions"
             />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/secondary_text_card_feedback_confirmation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:gravity="center"
+            android:text="Você está indo muito bem. Continue se exercitando."
+            android:textStyle="bold"
+            android:textColor="#CCFFFFFF"
+            android:layout_marginStart="42dp"
+            android:layout_marginEnd="42dp"
+            android:layout_marginBottom="64dp"
+            android:textSize="18sp"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/ic_warning_sign"
-        app:backgroundTint="@color/color_feedback_floating_button"
-        android:layout_marginBottom="12dp"
-        android:layout_gravity="end"/>
+        <View
+            android:id="@+id/view_divisor_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/white"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="64dp"
+            android:visibility="gone"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/string_confirm"
-        android:background="@drawable/shape_btn_confirm"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"/>
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_feedback_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_feedback_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:textSize="24sp"
+                android:textColor="@android:color/white"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:text="SIM"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btn_feedback_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_weight="1"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:textSize="24sp"
+                android:textColor="@android:color/white"
+                android:text="NÃO"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+</io.codetail.widget.RevealFrameLayout>

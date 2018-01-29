@@ -18,4 +18,6 @@
     <color name="color_borg_scale_subtitle">#B3B8C7</color>
     <color name="color_feedback_series_title">#828282</color>
     <color name="color_feedback_floating_button">#F2C94C</color>
+    <color name="card_feedback">#F2C94C</color>
+
 </resources>

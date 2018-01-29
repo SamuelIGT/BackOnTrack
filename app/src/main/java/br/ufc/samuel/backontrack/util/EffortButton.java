@@ -39,7 +39,7 @@ public class EffortButton {
 
     public void select(Context context, List<EffortButton> btnList) {
         if (!isSelected) {
-            showAll(btnList, context);//shows all the icons texts
+            //showAll(btnList, context);//shows all the icons texts
             setDefaultButton(btnList, context); //sets all icons to the default state(deselected)
             setSelected(true);
             playIconAnimation(context);
@@ -49,7 +49,7 @@ public class EffortButton {
         } else {
             showAll(btnList, context);
 //            DrawableCompat.setTint(btn.getDrawable(), ContextCompat.getColor(context, R.color.colorSuccess));
-            getTitle().setTextColor(ContextCompat.getColor(context, R.color.colorDisabled));
+            getTitle().setTextColor(ContextCompat.getColor(context, R.color.color_borg_scale_subtitle));
             setSelected(false);
             playIconAnimation(context);
 
@@ -66,13 +66,14 @@ public class EffortButton {
 
     public void deselectAll(EffortButton eBtn, Context context) {
 //        DrawableCompat.setTint(eBtn.getBtn().getDrawable(), ContextCompat.getColor(context, R.color.colorDisabled));
-        eBtn.getTitle().setTextColor(ContextCompat.getColor(context, R.color.colorDisabled));
+
         if(eBtn.isSelected()){
+            eBtn.getTitle().setTextColor(ContextCompat.getColor(context, R.color.color_borg_scale_subtitle));
             eBtn.getBtn().startAnimation(playZoomAnimation(context, !eBtn.isSelected()));
+            eBtn.setSelected(false);
+            animateImageButton(context, eBtn.isSelected());
         }
-        eBtn.setSelected(false);
-        animateImageButton(context, eBtn.isSelected());
-        eBtn.getTitle().setVisibility(View.INVISIBLE);
+      //  eBtn.getTitle().setVisibility(View.INVISIBLE);
     }
 
     public void showAll(List<EffortButton> btnList, Context context) {
@@ -98,7 +99,7 @@ public class EffortButton {
         if(isZoomIn)
             color = context.getResources().getColor(R.color.colorPrimary);
         else
-            color = context.getResources().getColor(R.color.colorDisabled);
+            color = context.getResources().getColor(R.color.color_borg_scale_subtitle);
 
         final int newColor = color;
 

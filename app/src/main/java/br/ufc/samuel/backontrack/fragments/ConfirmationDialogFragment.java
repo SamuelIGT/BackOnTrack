@@ -72,7 +72,7 @@ public class ConfirmationDialogFragment extends DialogFragment {
                 Animator mAnimator =
                         ViewAnimationUtils.createCircularReveal(rootView.findViewById(R.id.confirmation_dialog), cx, cy, 0, radius);
                 mAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-                mAnimator.setDuration(400);
+                mAnimator.setDuration(500);
                 mAnimator.addListener(new Animator.AnimatorListener(
 
                 ) {

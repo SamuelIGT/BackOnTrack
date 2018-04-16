@@ -17,10 +17,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+
+    }
 }
 repositories{
         maven{
             url "https://jitpack.io"
+        }
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
         }
 }
 
@@ -40,5 +54,6 @@ dependencies {
         transitive = true;
     }
     compile 'com.android.support:cardview-v7:27.0.2'
-
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    compile 'com.google.code.gson:gson:2.8.2'
 }

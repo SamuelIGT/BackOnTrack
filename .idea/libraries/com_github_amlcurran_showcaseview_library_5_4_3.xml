@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="com.github.amlcurran.showcaseview:library-5.4.3">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-5.4.3.aar/72878a4d0fd41095e7f8c02a7d9fa35f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-5.4.3.aar/72878a4d0fd41095e7f8c02a7d9fa35f/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-5.4.3.aar/4e46b34912302e7980e4133aade0f4e0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-5.4.3.aar/4e46b34912302e7980e4133aade0f4e0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

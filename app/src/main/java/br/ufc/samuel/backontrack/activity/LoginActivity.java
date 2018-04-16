@@ -6,6 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
+import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.ufc.samuel.backontrack.R;
+import br.ufc.samuel.backontrack.connection.LoginClient;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,12 +27,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtPassword;
     //private ImageButton btnLogin;
     private TextView logo;
+    private LoginClient loginClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        loginClient = new LoginClient();
         findViews();
         animateLogoText(logo);
     }
@@ -68,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        String registration;
-        String password;
+        String registration = "";
+        String password = "";
 
         if(edtRegistration.getText() != null){
             registration = edtRegistration.getText().toString();
@@ -77,9 +82,15 @@ public class LoginActivity extends AppCompatActivity {
         if (edtPassword.getText() != null){
             password = edtPassword.getText().toString();
         }
+        if(password != "" && registration != "") {
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        //    registration = //login;
+        //    password = //senha;
+            new LoginTask(registration, password).execute();
+        }
+
+        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        //startActivity(intent);
 
         //TODO: Realizar chamada de metodo de login do servidor.
         //TODO: Se o login for válido guardar no banco local o login e senha.
@@ -137,5 +148,27 @@ public class LoginActivity extends AppCompatActivity {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
+    }
+
+    private class LoginTask extends AsyncTask<Void, Integer, Void>{
+        private String email;
+        private String password;
+
+        public LoginTask (String email, String password){
+            this.email = email;
+            this.password = password;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String token = loginClient.getToken(email, password);
+            Log.d("LOGIN TOKEN: ", token);
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            Log.d("TOKEN PROGRESS: ", ""+values[0]);
+        }
     }
 }

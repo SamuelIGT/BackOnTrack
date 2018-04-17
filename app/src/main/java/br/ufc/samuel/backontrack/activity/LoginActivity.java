@@ -16,10 +16,16 @@ import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.net.HttpURLConnection;
 
 import br.ufc.samuel.backontrack.R;
+import br.ufc.samuel.backontrack.connection.ClientController;
 import br.ufc.samuel.backontrack.connection.LoginClient;
+import br.ufc.samuel.backontrack.model.Token;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,16 +33,28 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtPassword;
     //private ImageButton btnLogin;
     private TextView logo;
-    private LoginClient loginClient;
+    private ClientController clientController;
+    private String loginResponse;
+    private LinearLayout loading;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginClient = new LoginClient();
+        clientController = new ClientController();
         findViews();
         animateLogoText(logo);
+
+        verifyAuthorization();
+    }
+
+    private void verifyAuthorization() {//TODO: Usar isso na Splash Screen de forma que LoginActivity so seja chamada se nao houver um Token.
+        if(Token.findById(Token.class, 1) != null){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void findViews() {
@@ -73,24 +91,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
+        loading = findViewById(R.id.layout_loading);
+        loginResponse = "";
+
         String registration = "";
         String password = "";
 
-        if(edtRegistration.getText() != null){
+        if (edtRegistration.getText() != null) {
             registration = edtRegistration.getText().toString();
         }
-        if (edtPassword.getText() != null){
+        if (edtPassword.getText() != null) {
             password = edtPassword.getText().toString();
         }
-        if(password != "" && registration != "") {
+        if (registration != "") {
+            if (password != "") {
+                registration = "admin@ufc.com";//TODO: Apagar essa linha.
+                password = "admini9move";//TODO: Apagar essa linha.
 
-        //    registration = //login;
-        //    password = //senha;
-            new LoginTask(registration, password).execute();
+                loading.setVisibility(View.VISIBLE);//Mostrar Barra de progresso circular.
+                new LoginTask(registration, password).execute();
+                Log.d("loginresponse", "teste");
+            }else {
+                edtPassword.requestFocus();
+            }
+        }else {
+            edtRegistration.requestFocus();
         }
-
-        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        //startActivity(intent);
 
         //TODO: Realizar chamada de metodo de login do servidor.
         //TODO: Se o login for válido guardar no banco local o login e senha.
@@ -150,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
         return Color.argb(alpha, red, green, blue);
     }
 
-    private class LoginTask extends AsyncTask<Void, Integer, Void>{
+    private class LoginTask extends AsyncTask<Void, Void, Void>{
         private String email;
         private String password;
 
@@ -161,14 +187,22 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String token = loginClient.getToken(email, password);
-            Log.d("LOGIN TOKEN: ", token);
+            loginResponse = clientController.login(email, password);
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            Log.d("TOKEN PROGRESS: ", ""+values[0]);
+        protected void onPostExecute(Void aVoid) {
+            loading.setVisibility(View.GONE);//Esconder barra de progresso circular.
+            if(loginResponse.equals(getString(R.string.login_success_msg))){
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }else{
+                //If some error occur
+                Log.d("LOGIN RESPONSE: ", loginResponse);
+                Log.d("R String: ", getString(R.string.login_success_msg));
+                Toast.makeText(LoginActivity.this, "Ocorreu algum erro no login. Tente novamente.", Toast.LENGTH_LONG);
+            }
         }
     }
 }

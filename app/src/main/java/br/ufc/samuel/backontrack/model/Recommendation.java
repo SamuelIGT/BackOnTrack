@@ -4,7 +4,7 @@ import com.orm.SugarRecord;
 
 import java.util.List;
 
-public class Recommendation extends SugarRecord<Recommendation>{
+public class Recommendation extends SugarRecord{
     private Long id;
     private List<Serie> serie;
 

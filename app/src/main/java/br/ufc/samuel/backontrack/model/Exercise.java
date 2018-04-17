@@ -2,7 +2,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 import java.util.List;
 
-public class Exercise extends SugarRecord<Exercise>{
+public class Exercise extends SugarRecord{
 	private Long id;
 	private String title;
 	private String description;

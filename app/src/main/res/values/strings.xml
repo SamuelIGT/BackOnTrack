@@ -27,4 +27,5 @@
     <string name="feedback_title">Como você avalia seu esforço nesse exercício?</string>
     <string name="feedback_series_title">Quantas repetições você fez?</string>
     <string name="string_confirm">CONFIRMAR</string>
+    <string name="login_success_msg">Login efetuado com sucesso!</string>
 </resources>

@@ -5,7 +5,7 @@ import com.orm.SugarRecord;
 
 import java.util.Date;
 
-public class Grasp extends SugarRecord<Grasp>{
+public class Grasp extends SugarRecord{
     private Long id;
     private Exercise exercise;
     private Level level;

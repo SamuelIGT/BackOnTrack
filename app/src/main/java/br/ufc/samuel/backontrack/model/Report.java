@@ -4,7 +4,7 @@ import com.orm.SugarRecord;
 
 import java.util.Date;
 
-public class Report extends SugarRecord<Report>{
+public class Report extends SugarRecord{
 	private Long id;
 	private Permition permition;
 	private String status;

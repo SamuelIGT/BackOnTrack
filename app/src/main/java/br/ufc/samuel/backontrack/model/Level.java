@@ -2,7 +2,7 @@ package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
 
-public class Level extends SugarRecord<Level>{
+public class Level extends SugarRecord{
     private Long id;
     private int level;
 

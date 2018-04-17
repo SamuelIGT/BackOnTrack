@@ -7,11 +7,15 @@ import com.google.gson.Gson;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Entity;
+
+import java.net.HttpURLConnection;
 
 import br.ufc.samuel.backontrack.model.User;
 
@@ -20,26 +24,30 @@ import br.ufc.samuel.backontrack.model.User;
  */
 
 public class LoginClient {
-    private final String url = "http://i9move.quixada.ufc.br/api/login";
-    public RestTemplate restTemplate = new RestTemplate();
-    private Gson gson = new Gson();
+    private String url;
+    public RestTemplate restTemplate;
 
-    public String getToken(String email, String senha){
-        User user = new User(email, senha);
+    public LoginClient(String baseUrl) {
+        this.url = baseUrl + "/login";
+        restTemplate = new RestTemplate();
+    }
+
+    public String[] getToken(String credentialsJson){
+        //"admin@ufc.com", "admini9move"
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         //headers.add('Authorization', token);
 
-        String jsonUser = gson.toJson(user);
-
-        HttpEntity<String> entity = new HttpEntity<>(jsonUser, headers);
-        String response;
+        HttpEntity<String> entity = new HttpEntity<>(credentialsJson, headers);
+        String response[] = {"", ""};
         try{
-            response = restTemplate.postForObject(url, entity, String.class);
+            response[1] = restTemplate.postForObject(url, entity, String.class);
+            response[0] = ""+HttpURLConnection.HTTP_OK;
         }catch (Exception e){
             e.printStackTrace();
-            response = "Login ou senha errados!";
+            response[1] = "Login ou senha errados!";
+            response[0] = e.getMessage();
         }
         return response;
     }

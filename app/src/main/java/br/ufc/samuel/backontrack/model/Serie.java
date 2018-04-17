@@ -1,9 +1,8 @@
 package br.ufc.samuel.backontrack.model;
 
-
 import com.orm.SugarRecord;
 
-public class Serie extends SugarRecord<Serie>{
+public class Serie extends SugarRecord{
     private Long id;
     private int sets;
     private int repeats;

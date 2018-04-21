@@ -40,6 +40,7 @@ public class LevelPreferences {
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putBoolean(context.getString(R.string.isFirstTime_Preferences_Key), isFirstTime);
+        editor.commit();
     }
 
     public String[] getLevelStatusPreferences() {
@@ -59,6 +60,5 @@ public class LevelPreferences {
 
         return isFirstTime;
     }
-
 
 }

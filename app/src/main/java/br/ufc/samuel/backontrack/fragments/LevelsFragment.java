@@ -82,7 +82,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         Context context = rootView.getContext();
 
         getPreferences();
-
+        Log.d("IsFistTime", ""+levelPreferences.isFirstTime());
         //if its the fist time the app is running, creates a ShowcaseView and displays it.
         if(isFirstTime){
             Target target = new ViewTarget(btnLv[0]);
@@ -319,6 +319,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         progressBar = rootView.findViewById(R.id.pgBar_lv1);
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -398,4 +399,5 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     public void connectionLost(long taskId) {
 
     }
+
 }

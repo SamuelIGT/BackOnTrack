@@ -40,7 +40,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 2;
+        return 1;
     }
 
     @Override
@@ -48,8 +48,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return context.getResources().getString(R.string.Exercise_TabLabel);
-            case 1:
-                return context.getResources().getString(R.string.Calendar_TabLabel);
+//            case 1:
+//                return context.getResources().getString(R.string.Calendar_TabLabel);
         }
         return null;
     }

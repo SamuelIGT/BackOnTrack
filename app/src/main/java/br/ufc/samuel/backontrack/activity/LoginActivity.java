@@ -52,9 +52,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyAuthorization() {//TODO: Usar isso na Splash Screen de forma que LoginActivity so seja chamada se nao houver um Token.
         if(Token.findById(Token.class, 1) != null){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+            startMainActivity();
         }
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void findViews() {
@@ -195,8 +199,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             loading.setVisibility(View.GONE);//Esconder barra de progresso circular.
             if(loginResponse.equals(getString(R.string.login_success_msg))){
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                startMainActivity();
             }else{
                 //If some error occur
                 Log.d("LOGIN RESPONSE: ", loginResponse);

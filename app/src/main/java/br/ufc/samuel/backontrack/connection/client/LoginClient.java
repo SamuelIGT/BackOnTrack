@@ -1,4 +1,4 @@
-package br.ufc.samuel.backontrack.connection;
+package br.ufc.samuel.backontrack.connection.client;
 
 import android.os.Debug;
 import android.util.Log;
@@ -52,23 +52,23 @@ public class LoginClient {
         return response;
     }
 
-    public String login(String token){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", token);
-
-        HttpEntity<String> entity = new HttpEntity<>(" ", headers);
-
-        String response;
-        try{
-            response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class).toString();
-//            response = restTemplate.getForObject(url, entity, String.class);
-        }catch (Exception e){
-            response = e.getMessage();
-            e.printStackTrace();
-        }
-
-        return response;
-    }
+//    public String login(String token){
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.set("Authorization", token);
+//
+//        HttpEntity<String> entity = new HttpEntity<>(" ", headers);
+//
+//        String response;
+//        try{
+//            response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class).toString();
+////            response = restTemplate.getForObject(url, entity, String.class);
+//        }catch (Exception e){
+//            response = e.getMessage();
+//            e.printStackTrace();
+//        }
+//
+//        return response;
+//    }
 }
 

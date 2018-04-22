@@ -7,24 +7,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.HttpURLConnection;
-
 import br.ufc.samuel.backontrack.R;
-import br.ufc.samuel.backontrack.connection.ClientController;
-import br.ufc.samuel.backontrack.connection.LoginClient;
+import br.ufc.samuel.backontrack.connection.controller.LoginController;
 import br.ufc.samuel.backontrack.model.Token;
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtPassword;
     //private ImageButton btnLogin;
     private TextView logo;
-    private ClientController clientController;
+    private LoginController loginController;
     private String loginResponse;
     private LinearLayout loading;
 
@@ -43,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        clientController = new ClientController();
+        loginController = new LoginController();
         findViews();
         animateLogoText(logo);
 
@@ -180,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
         return Color.argb(alpha, red, green, blue);
     }
 
+
     private class LoginTask extends AsyncTask<Void, Void, Void>{
         private String email;
         private String password;
@@ -191,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            loginResponse = clientController.login(email, password);
+            loginResponse = loginController.login(email, password);
             return null;
         }
 

@@ -46,7 +46,7 @@ public class LevelPreferences {
     public String[] getLevelStatusPreferences() {
 
 
-        String[] lvStatus = new String[2];
+        String[] lvStatus = new String[3];
         lvStatus[0] = preferences.getString(context.getString(R.string.LV1_Preferences_Key), null);
         lvStatus[1] = preferences.getString(context.getString(R.string.LV2_Preferences_Key), null);
         lvStatus[2] = preferences.getString(context.getString(R.string.LV3_Preferences_Key), null);

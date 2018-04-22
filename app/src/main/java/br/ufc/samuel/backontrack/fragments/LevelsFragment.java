@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -23,14 +24,21 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.golshadi.majid.core.DownloadManagerPro;
 import com.golshadi.majid.core.enums.QueueSort;
+import com.golshadi.majid.report.ReportStructure;
 import com.golshadi.majid.report.exceptions.QueueDownloadInProgressException;
 import com.golshadi.majid.report.listener.DownloadManagerListener;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
+import br.ufc.samuel.backontrack.connection.controller.GraspController;
+import br.ufc.samuel.backontrack.model.Grasp;
+import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.util.showcase.CustomShowcaseView;
 import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.util.preferences.LevelPreferences;
@@ -48,6 +56,9 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
     private View rootView;
     private int currentDownloadingLevel;
     private List<Long> downloadsCompleted;
+    private Grasp[] grasp;
+    private DownloadManagerPro dm;
+    private Progress userProgress;
 
     public LevelsFragment() {
         // Required empty public constructor
@@ -161,6 +172,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         }
     }
 
+    //Todo: esse método faz a mesma coisa que o método setLevelButtonClickListener. -Consertar-
     private void setDownloadLevelButtonClickListener(final int index) {
         btnLv[index].setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +183,9 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 if (ContextCompat.checkSelfPermission(rootView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     Log.d("Tem permissão?  ", "SIM");
 
-                    downloadLevel();
+                    //downloadLevel();
+                    //TODO: chamar AsyncTask para fazer requisição dos dados.
+                    new LevelDownloadTask(/*grasp*/).execute();
 
                 } else {
                     Log.d("Tem permissão?  ", "NÃO");
@@ -185,23 +199,30 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     }
 
-    private void downloadLevel() {
-
+    private void downloadLevel(Grasp[] grasp) {
+        this.grasp = grasp;
         playProgressBarAnimation(false);
 
-        DownloadManagerPro dm = new DownloadManagerPro(rootView.getContext().getApplicationContext());
+        dm = new DownloadManagerPro(rootView.getContext().getApplicationContext());
 
         dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
 
-        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/zrnq3LDLAwK1/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
-        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/zrofqw-kBxdG/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
+        //Grasp grasp = new Grasp();
+        List<Integer> taskTokenList = new ArrayList<>();
+        //TODO: Adicionar path dos videos à fila.
+        for (int i = 0; i <= grasp.length; i++){
+            int taskToken = dm.addTask(/*exercise title*/  grasp[i].getId() + "_" + i, /*video download path*/grasp[i].getExercise().getMidia().getPathVideo(), true, false);
+            taskTokenList.add(taskToken);
+        }
+//        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/zrnq3LDLAwK1/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
+//        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/zrofqw-kBxdG/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
         downloadsCompleted = new ArrayList<>();
         try {
             dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.
-
         } catch (QueueDownloadInProgressException e) {
             e.printStackTrace();
         }
+
     }
 
     private void playProgressBarAnimation(boolean isReversed) {
@@ -269,7 +290,8 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
-                    intent.putExtra(getString(R.string.LEVEL_NUMBER), index+1);
+//                    intent.putExtra(getString(R.string.LEVEL_NUMBER), index+1);
+                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
                 }
             });
@@ -306,6 +328,7 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
             levelPreferences.setLevelDefaults(preferences);//sets the preferences
 
         }else{//if is not the first time, gets the saved preferences
+            //TODO: Só executar a linha abaixo se não tiver internet para verficar o nível atual com o servidor
             levelStatus = levelPreferences.getLevelStatusPreferences();
         }
         levelPreferences.setDefaults(false);//sets the firstTime preference as false
@@ -319,6 +342,14 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         progressBar = rootView.findViewById(R.id.pgBar_lv1);
     }
 
+    //change the video path to the local path
+    private void changeVideoPath(){
+        List<ReportStructure> downloadList = dm.lastCompletedDownloads();
+        for (ReportStructure rs: downloadList){
+            int index = Integer.parseInt(rs.name.split("_")[1]);
+            grasp[index].getExercise().getMidia().setPathVideo(rs.saveAddress);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -327,7 +358,9 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         Log.d("Permission_Number: ", ""+requestCode);
         switch (requestCode) {
             case 0:
-                downloadLevel();
+                //downloadLevel();
+                //AsyncTask para fazer requisição dos dados.
+                new LevelDownloadTask(/*grasp*/).execute();
         }
 
     }
@@ -378,13 +411,27 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
         if(downloadsCompleted == null){
             downloadsCompleted = new ArrayList<>();
         }
+
         downloadsCompleted.add(taskId);
-        if(downloadsCompleted.size() == 2){
+
+        changeVideoPath();//change video path to local path
+        List<Long> exerciseQueue = new ArrayList<>();
+        if(downloadsCompleted.size() == grasp.length){
             //TODO: mudar para forma dinâmica onde o valor 2 seria substituído pelo numero de vídeos diferentes do Nível selecionado.
             downloadsCompleted = null;
             levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
 
-            getActivity().runOnUiThread(new Runnable() {
+            for (int i = 0; i <= grasp.length; i++){
+                grasp[i].save();
+
+                exerciseQueue.add(grasp[i].getId());
+            }
+
+            userProgress = new Progress(exerciseQueue);
+            userProgress.save();
+
+            levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
+            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     playProgressBarAnimation(true);
@@ -397,7 +444,31 @@ public class LevelsFragment extends Fragment implements DownloadManagerListener 
 
     @Override
     public void connectionLost(long taskId) {
+        Log.d("ERRO DE CONEXÃO: ", "conexão perdida!");
+    }
 
+
+
+    //---------------------------LEVEL DOWNLOAD ASYNCTASK---------------------------------------\\
+    private class LevelDownloadTask extends AsyncTask<Void, Void, Void> {
+        Grasp[] grasp;
+
+/*        public LevelDownloadTask(Grasp grasp){
+            this.grasp = grasp;
+        }*/
+        @Override
+        protected Void doInBackground(Void... voids) {
+            GraspController controller = new GraspController();
+            grasp = controller.getExercises();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            downloadLevel(grasp);
+        }
     }
 
 }
+
+

@@ -48,7 +48,9 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.ExerciseExecutionActivity"></activity>
+        <activity
+            android:name=".activity.ExerciseExecutionActivity"
+            android:noHistory="true"/>
     </application>
 
 </manifest>

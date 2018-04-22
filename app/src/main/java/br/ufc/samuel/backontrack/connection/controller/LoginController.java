@@ -1,4 +1,4 @@
-package br.ufc.samuel.backontrack.connection;
+package br.ufc.samuel.backontrack.connection.controller;
 
 import android.util.Log;
 
@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 
+import br.ufc.samuel.backontrack.connection.client.LoginClient;
 import br.ufc.samuel.backontrack.model.Token;
 import br.ufc.samuel.backontrack.model.User;
 
@@ -13,11 +14,11 @@ import br.ufc.samuel.backontrack.model.User;
  * Created by samuel on 4/16/18.
  */
 
-public class ClientController {
+public class LoginController {
     private final String url = "http://i9move.quixada.ufc.br/api";
     private Gson gson;
 
-    public ClientController() {
+    public LoginController() {
         this.gson = new Gson();
     }
 

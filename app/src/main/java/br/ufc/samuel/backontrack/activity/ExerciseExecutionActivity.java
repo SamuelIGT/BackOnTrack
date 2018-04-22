@@ -21,10 +21,13 @@ import android.widget.VideoView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import br.ufc.samuel.backontrack.fragments.ExerciseStartDialogFragment;
 import br.ufc.samuel.backontrack.fragments.ExitAlertDialogFragment;
 import br.ufc.samuel.backontrack.fragments.FeedbackDialogFragment;
+import br.ufc.samuel.backontrack.model.Grasp;
+import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.util.Chronometer;
 
 import br.ufc.samuel.backontrack.R;
@@ -39,6 +42,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     private AnimatedVectorDrawableCompat avdPlayToStop;
     private AnimatedVectorDrawableCompat avdStopToPlay;
     private ValueAnimator pgBarOutlineAnim;
+    private Grasp currentExercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +64,30 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
         setUpButtons();
         initializeVectorDrawableAnimations();
 
-        int intExtra = getIntent().getIntExtra(getString(R.string.LEVEL_NUMBER), -1);
-        String videopath = Environment.getExternalStorageDirectory().getPath()+getString(R.string.exercise_videos_rootPath)+ intExtra +"/"+"ex"+(intExtra+1)+".mp4";
-        videoView.setVideoPath(videopath);
-        videoView.seekTo(100);
+        //int intExtra = getIntent().getIntExtra(getString(R.string.LEVEL_NUMBER), -1);
+        prepareVideo();
+        //String videopath = Environment.getExternalStorageDirectory().getPath()+getString(R.string.exercise_videos_rootPath)+ intExtra +"/"+"ex"+(intExtra+1)+".mp4";
 
 
         showExerciseStartDialog();//shows the exercises start dialog
-
-        Log.d("Selected Level: ", videopath);
 //        mediaController.show();//shows the Media Controller HUD
 
+    }
+
+    private void prepareVideo() {
+        long currentExerciseId = Progress.findById(Progress.class, 1).getExercisesQueue().get(0);
+
+        List<Grasp> exercises = Grasp.listAll(Grasp.class);
+
+        currentExercise = new Grasp();
+        for(Grasp exercise: exercises){
+            if(exercise.getId() == currentExerciseId){
+                currentExercise = exercise;
+            }
+        }
+
+        videoView.setVideoPath(currentExercise.getExercise().getMidia().getPathVideo());
+        videoView.seekTo(100);
     }
 
     @Override

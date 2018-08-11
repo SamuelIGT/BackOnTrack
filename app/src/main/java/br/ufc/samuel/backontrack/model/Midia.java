@@ -3,7 +3,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 
 public class Midia extends SugarRecord {
-    private Long id;
+    private transient Long id;
     private String pathVideo;
     private String title;
 

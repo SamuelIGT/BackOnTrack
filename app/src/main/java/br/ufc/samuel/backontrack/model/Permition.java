@@ -3,7 +3,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 
 public class Permition extends SugarRecord{
-    private Long id;
+    private transient Long id;
     private boolean isUnlocked = false;
     private Grasp grasp;
     private Patient patient;

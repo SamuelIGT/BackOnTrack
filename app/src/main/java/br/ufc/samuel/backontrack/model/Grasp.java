@@ -6,16 +6,26 @@ import com.orm.SugarRecord;
 import java.util.Date;
 
 public class Grasp extends SugarRecord{
-    private Long id;
+    private transient Long id;
     private Exercise exercise;
     private Level level;
     private Recommendation recommendation;
     private String tip;
-    private Date update;
+    private Date latestUpdate;
     private int sequence;
 
     public Grasp() {
 
+    }
+/*
+    public Grasp(Long id, Exercise exercise, Level level, Recommendation recommendation, String tip, Date updateDate, int sequence) {
+        this.id = id;
+        this.exercise = exercise;
+        this.level = level;
+        this.recommendation = recommendation;
+        this.tip = tip;
+        this.updateDate = updateDate;
+        this.sequence = sequence;
     }
 
     public Grasp(Exercise exercise, Level level, String tip, int sequence){
@@ -23,7 +33,7 @@ public class Grasp extends SugarRecord{
         this.level = level;
         this.tip = tip;
         this.sequence = sequence;
-    }
+    }*/
 
     public Long getId() {
         return id;
@@ -65,12 +75,12 @@ public class Grasp extends SugarRecord{
         this.tip = tip;
     }
 
-    public Date getUpdate() {
-        return update;
+    public Date getLatestUpdate() {
+        return latestUpdate;
     }
 
-    public void setUpdate(Date update) {
-        this.update = update;
+    public void setLatestUpdate(Date latestUpdate) {
+        this.latestUpdate = latestUpdate;
     }
 
     public int getSequence() { return sequence; }

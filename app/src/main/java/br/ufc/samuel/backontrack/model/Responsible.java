@@ -4,7 +4,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 
 public class Responsible extends SugarRecord{
-	private Long id;
+	private transient Long id;
 	private String email;
 	private String password;
 	private String name;

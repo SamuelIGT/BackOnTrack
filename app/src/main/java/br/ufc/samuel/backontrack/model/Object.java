@@ -3,7 +3,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 
 public class Object extends SugarRecord{
-    private Long id;
+    private transient Long id;
     private String name;
 
     public Object(){

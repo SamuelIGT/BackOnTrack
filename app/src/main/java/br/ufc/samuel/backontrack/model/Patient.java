@@ -3,7 +3,7 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 
 public class Patient extends SugarRecord{
-	private Long id;
+	private transient Long id;
 	private String registration;
 	private String name;
 	private String phone;

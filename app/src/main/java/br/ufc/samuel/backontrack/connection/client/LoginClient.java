@@ -25,7 +25,7 @@ import br.ufc.samuel.backontrack.model.User;
 
 public class LoginClient {
     private String url;
-    public RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     public LoginClient(String baseUrl) {
         this.url = baseUrl + "/login";

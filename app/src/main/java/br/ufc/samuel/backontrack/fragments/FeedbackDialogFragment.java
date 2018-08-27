@@ -1,6 +1,7 @@
 package br.ufc.samuel.backontrack.fragments;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,14 +15,19 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.ufc.samuel.backontrack.R;
+import br.ufc.samuel.backontrack.model.Grasp;
+import br.ufc.samuel.backontrack.model.Progress;
+import br.ufc.samuel.backontrack.model.Report;
 import br.ufc.samuel.backontrack.util.EffortButton;
 import io.codetail.animation.ViewAnimationUtils;
 
@@ -32,17 +38,32 @@ import io.codetail.animation.ViewAnimationUtils;
 public class FeedbackDialogFragment extends DialogFragment {
 
     private View rootView;
+    private View feedbackAlertCard;
     private List<EffortButton> effortButtons;
     private FloatingActionButton feedbackAlert;
     private ImageButton increaseRepetitions;
     private ImageButton decreaseRepetitions;
     private TextView repetitionsNumber;
+    private EditText alertMessage;
     private Button cardButtonConfirm;
     private Button feedbackConfirmButton;
     private Button feedbackYes;
     private Button feedbackNo;
 
+    private Progress progress;
+    private Long graspId;
+    private Report report;
+
     public FeedbackDialogFragment() {}
+
+    public static FeedbackDialogFragment newInstance(Long graspId, String argsKey, int timerCount) {
+        Bundle args = new Bundle();
+        args.putLong(argsKey, graspId);
+        args.putInt(argsKey, timerCount);
+        FeedbackDialogFragment fragment = new FeedbackDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -55,6 +76,8 @@ public class FeedbackDialogFragment extends DialogFragment {
         findViews();
         setButtonsClickListeners();
 
+        report = new Report();
+
         return rootView;
     }
 
@@ -63,8 +86,17 @@ public class FeedbackDialogFragment extends DialogFragment {
         feedbackNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                //TODO:Chamar metodo de criar relatorio/enviar e finalizar.
+                finishExercise();
+
                 getActivity().finish();
+            }
+        });
+        feedbackYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishExercise();
+                //TODO: Finalizar activity ExerciceExcution e iniciar uma nova
             }
         });
 
@@ -72,9 +104,8 @@ public class FeedbackDialogFragment extends DialogFragment {
         feedbackAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View myView = rootView.findViewById(R.id.card_feedback_alert);
-                myView.setVisibility(View.VISIBLE);
-                Animator mAnimator = getRevealAnimator(myView, feedbackAlert, true);
+                feedbackAlertCard.setVisibility(View.VISIBLE);
+                Animator mAnimator = getRevealAnimator(feedbackAlertCard, feedbackAlert, true);
 
                 mAnimator.start();
             }
@@ -107,6 +138,8 @@ public class FeedbackDialogFragment extends DialogFragment {
                 public void onClick(View view) {
                     // setDefaultButton(btnList.get(0), btnList);
                     effortButtons.get(j).select(rootView.getContext(), effortButtons);
+                    int effortLevel = effortButtons.get(j).getLevel();
+                    report.setEffortLevel(effortLevel);
                 }
             });
         }
@@ -239,6 +272,8 @@ public class FeedbackDialogFragment extends DialogFragment {
         feedbackConfirmButton = rootView.findViewById(R.id.btn_feedback_confirm);
         feedbackYes = rootView.findViewById(R.id.btn_feedback_yes);
         feedbackNo = rootView.findViewById(R.id.btn_feedback_no);
+        feedbackAlertCard = rootView.findViewById(R.id.card_feedback_alert);
+        alertMessage = feedbackAlertCard.findViewById(R.id.feedback_alert_editText);
 
         effortButtons = new ArrayList<>();
         effortButtons.add(new EffortButton(1, (TextView)rootView.findViewById(R.id.title_effort_lv_1), (ImageButton)rootView.findViewById(R.id.ic_effort_lv_1)));
@@ -246,7 +281,29 @@ public class FeedbackDialogFragment extends DialogFragment {
         effortButtons.add(new EffortButton(3, (TextView)rootView.findViewById(R.id.title_effort_lv_3), (ImageButton)rootView.findViewById(R.id.ic_effort_lv_3)));
         effortButtons.add(new EffortButton(4, (TextView)rootView.findViewById(R.id.title_effort_lv_4), (ImageButton)rootView.findViewById(R.id.ic_effort_lv_4)));
         effortButtons.add(new EffortButton(5, (TextView)rootView.findViewById(R.id.title_effort_lv_5), (ImageButton)rootView.findViewById(R.id.ic_effort_lv_5)));
+    }
 
+    private void finishExercise(){
+        graspId = getArguments().getLong(getString(R.string.ARGS_FEEDBACK_DIALOG));
+        Grasp grasp = Grasp.findById(Grasp.class, graspId);
+
+        int numberOfSets = Integer.parseInt(repetitionsNumber.getText().toString());
+        report.setRepetitions(grasp.getRecommendation().getSerie().get(0).getRepeats());
+        report.setSets(numberOfSets);
+
+        String status = (numberOfSets >= grasp.getRecommendation().getSerie().get(0).getSets()) ? getString(R.string.EXERCISE_STATUS_1) : getString(R.string.EXERCISE_STATUS_2);
+        report.setStatus(status);
+
+        report.setTime(getArguments().getInt(getString(R.string.ARGS_FEEDBACK_DIALOG)));
+
+        report.setMessage(alertMessage.getText().toString());
+
+        report.setDate(Calendar.getInstance().getTime());
+
+        dismiss();
+        //TODO:Tentar fazer o upload. Caso contrario, adicionar na fila de upload.
+
+        progress.getExercisesQueue().remove(0);//removes the first member of the list, which is always the current exercise.
 
     }
 }

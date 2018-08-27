@@ -2,8 +2,10 @@ package br.ufc.samuel.backontrack.model;
 
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 public class Responsible extends SugarRecord{
+	@Ignore
 	private transient Long id;
 	private String email;
 	private String password;
@@ -17,14 +19,6 @@ public class Responsible extends SugarRecord{
 		this.email = email;
 		this.password = password;
 		this.name = name;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getEmail() {

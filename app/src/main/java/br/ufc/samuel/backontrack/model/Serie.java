@@ -1,8 +1,10 @@
 package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 public class Serie extends SugarRecord{
+    @Ignore
     private transient Long id;
     private int sets;
     private int repeats;
@@ -12,14 +14,6 @@ public class Serie extends SugarRecord{
     public Serie(int sets, int repeats){
         this.sets = sets;
         this.repeats = repeats;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getSets() {

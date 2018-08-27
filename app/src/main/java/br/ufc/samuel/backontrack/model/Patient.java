@@ -1,8 +1,10 @@
 package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 public class Patient extends SugarRecord{
+	@Ignore
 	private transient Long id;
 	private String registration;
 	private String name;
@@ -24,14 +26,6 @@ public class Patient extends SugarRecord{
 		this.phoneParent = phoneParent;
 		this.progress = 1;
 
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -89,4 +83,10 @@ public class Patient extends SugarRecord{
 	public void setResponsible(Responsible responsible) {
 		this.responsible = responsible;
 	}
+
+    @Override
+    public long save() {
+        responsible.save();
+	    return super.save();
+    }
 }

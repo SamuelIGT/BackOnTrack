@@ -1,8 +1,10 @@
 package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 public class Level extends SugarRecord{
+    @Ignore
     private transient Long id;
     private int level;
 
@@ -11,14 +13,6 @@ public class Level extends SugarRecord{
     }
     public Level(int level){
         this.level = level;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getLevel() {

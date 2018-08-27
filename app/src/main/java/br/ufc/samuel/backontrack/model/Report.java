@@ -1,10 +1,12 @@
 package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.Date;
 
 public class Report extends SugarRecord{
+	@Ignore
 	private Long id;
 	private Permition permition;
 	private String status;
@@ -13,18 +15,10 @@ public class Report extends SugarRecord{
 	private Date date;
 	private String message;
 	private int sets;
-	private int repetitions;
+	private int repetitions; //TODO:Remover esse atributo no servidor.
 
 	public Report(){
 
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public Permition getPermition() { return permition; }
@@ -79,4 +73,9 @@ public class Report extends SugarRecord{
 
 	public void setRepetitions(int repetitions) { this.repetitions = repetitions; }
 
+    @Override
+    public long save() {
+        permition.save();
+	    return super.save();
+    }
 }

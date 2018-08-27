@@ -6,7 +6,7 @@
     <string name="cnt_description_login_profile">icone de uma pessoa</string>
     <string name="cnt_description_login_password">icone de um cadeado</string>
     <string name="cnt_description_login_logo">back on track</string>
-    <string name="login_app_name">back on track</string>
+    <string name="login_app_name">i9move</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -28,4 +28,7 @@
     <string name="feedback_series_title">Quantas repetições você fez?</string>
     <string name="string_confirm">CONFIRMAR</string>
     <string name="login_success_msg">Login efetuado com sucesso!</string>
+    <string name="ARGS_FEEDBACK_DIALOG">ARGS_FEEDBACK_DIALOG</string>
+    <string name="EXERCISE_STATUS_1">COMPLETO</string>
+    <string name="EXERCISE_STATUS_2">INCOMPLETO</string>
 </resources>

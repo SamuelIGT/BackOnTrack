@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.SQLException;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -31,28 +27,22 @@ import com.liulishuo.okdownload.core.cause.ResumeFailedCause;
 import com.liulishuo.okdownload.core.listener.DownloadListener1;
 import com.liulishuo.okdownload.core.listener.assist.Listener1Assist;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
-import br.ufc.samuel.backontrack.connection.controller.PermitionController;
+import br.ufc.samuel.backontrack.connection.controller.PermissionController;
 import br.ufc.samuel.backontrack.model.Grasp;
 import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.util.DownloadUtils;
 import br.ufc.samuel.backontrack.util.preferences.LevelPreferences;
 import br.ufc.samuel.backontrack.util.showcase.CustomShowcaseView;
-//TODO: Remover tela de login da pilha de retorno
+
 
 public class LevelsFragment extends Fragment{
 
     private ImageButton[] btnLv;
-    //private ImageButton btnLv2;
-    //private ImageButton btnLv3;
     private CircularProgressBar progressBar;
     private LevelPreferences levelPreferences;
     private boolean isFirstTime;
@@ -62,6 +52,9 @@ public class LevelsFragment extends Fragment{
     private List<Integer> downloadsCompleted;
     private Grasp[] grasp;
     private Progress userProgress;
+    private int currentDownloadingExerciseIndex;
+    private DownloadTask[] tasks;
+    private float totalProgress;
 
     public LevelsFragment() {
         // Required empty public constructor
@@ -122,9 +115,6 @@ public class LevelsFragment extends Fragment{
 
     }
 
-    private void setLevelButtonOnClickListener(int index) {
-    }
-
     private void updateLevelStatus(final int index) {
         String status = levelStatus[index];
         Context context = rootView.getContext();
@@ -138,7 +128,7 @@ public class LevelsFragment extends Fragment{
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv1_download);
-                    setDownloadLevelButtonClickListener(index);
+                    setLevelButtonClickListener(index);
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv1_inactive);
@@ -152,7 +142,7 @@ public class LevelsFragment extends Fragment{
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv2_download);
-                    setDownloadLevelButtonClickListener(index);
+                    setLevelButtonClickListener(index);
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv2_inactive);
@@ -166,7 +156,7 @@ public class LevelsFragment extends Fragment{
                 }
                 else if(context.getString(R.string.LV_STATUS_DOWNLOAD).equals(status)){
                     btnLv[index].setImageResource(R.drawable.ic_lv3_download);
-                    setDownloadLevelButtonClickListener(index);
+                    setLevelButtonClickListener(index);
                 }
                 else {
                     btnLv[index].setImageResource(R.drawable.ic_lv3_inactive);
@@ -179,42 +169,11 @@ public class LevelsFragment extends Fragment{
         }
     }
 
-    //Todo: esse método faz a mesma coisa que o método setLevelButtonClickListener. -Consertar-
-    private void setDownloadLevelButtonClickListener(final int index) {
-        btnLv[index].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentDownloadingLevel = index;
-                btnLv[index].setEnabled(false);
-
-                if (ContextCompat.checkSelfPermission(rootView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("Tem permissão?  ", "SIM");
-
-                    downloadVideos();
-
-
-
-                    //downloadLevel();
-                    //TODO: chamar AsyncTask para fazer requisição dos dados.
-                   // new LevelDownloadTask(/*grasp*/).execute();
-
-                } else {
-                    Log.d("Tem permissão?  ", "NÃO");
-                    // Request permission from the user
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                }
-
-
-            }
-        });
-
-
-    }
-
     private void downloadVideos() {
+        //tasksFailed = new ArrayList<>();
         playProgressBarAnimation(false);
 
-        DownloadTask[] tasks = new DownloadTask[grasp.length];
+        /*DownloadTask[]*/ tasks = new DownloadTask[grasp.length];
         for(int i = 0; i < grasp.length; i++){
             tasks[i] = new DownloadTask.Builder(grasp[i].getExercise().getMidia().getPathVideo(), DownloadUtils.getParentFile(getContext(), getString(R.string.exercise_videos_rootPath)+""+(currentDownloadingLevel+1)+"/"))
                     .setFilename("exercise_"+ i + "_level_" + grasp[i].getLevel().getLevel()+".mp4")
@@ -222,51 +181,16 @@ public class LevelsFragment extends Fragment{
                     .setPassIfAlreadyCompleted(false)
                     .build();
         }
-//        DownloadTask task = new DownloadTask.Builder("http://i9move.quixada.ufc.br/api/video/videoY.mp4",  DownloadUtils.getParentFile(getContext(),getString(R.string.exercise_videos_rootPath)+""+(currentDownloadingLevel+1)+"/" ))
-//                 .setFilename("sdd.mp4")
-//                 .setMinIntervalMillisCallbackProcess(30)
-//                 .setPassIfAlreadyCompleted(false)
-//                 .build();
+
         Log.d("DownloadVideos","enqueue");
 
         DownloadListener1 listener = createCustomDownloadLisneter();
 
-        DownloadTask.enqueue(tasks, listener);
+        tasks[currentDownloadingExerciseIndex].enqueue(listener);
+
+        //DownloadTask.enqueue(tasks, listener);
 
     }
-
-    /*private void downloadLevel(*//*Grasp[] grasp*//*) {
-//        this.grasp = grasp;
-        playProgressBarAnimation(false);
-
-        dm = new DownloadManagerPro(rootView.getContext().getApplicationContext());
-
-        dm.init(getString(R.string.exercise_videos_rootPath)+(currentDownloadingLevel+1)+"/", 10, LevelsFragment.this);
-
-        //Grasp grasp = new Grasp();
-        List<Integer> taskTokenList = new ArrayList<>();
-
-        //TODO: Adicionar path dos videos à fila.
-        for (int i = 0; i < grasp.length; i++){
-            Log.d("Downloading video path", "" + grasp[i].getExercise().getMidia().getPathVideo());
-
-            if(grasp[i].getExercise().getMidia().getPathVideo() != null) {
-                String videoUrl = grasp[i].getExercise().getMidia().getPathVideo();
-
-                int taskToken = dm.addTask(*//*exercise title*//*  grasp[i].getId() + "_" + i, *//*video download path*//*videoUrl, true, false);
-                taskTokenList.add(taskToken);
-            }
-        }
-//        int taskToken1 = dm.addTask("ex1", "https://volafile.org/get/zrnq3LDLAwK1/6%20-%20Flex%C3%A3o%20de%20um%20bra%C3%A7o.mp4", true, false);
-//        int taskToken2 = dm.addTask("ex2", "https://volafile.org/get/zrofqw-kBxdG/17%20-%20Gar%C3%A7om%20com%20o%20copo.mp4", true, false);
-        downloadsCompleted = new ArrayList<>();
-        try {
-            dm.startQueueDownload(0, QueueSort.oldestFirst); //downloadTaskPerTime (the first parameter) cannot equals or higher than the number of tasks.
-        } catch (QueueDownloadInProgressException e) {
-            e.printStackTrace();
-        }
-
-    }*/
 
     private void playProgressBarAnimation(boolean isReversed) {
 
@@ -343,7 +267,22 @@ public class LevelsFragment extends Fragment{
             btnLv[index].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO:Fazer download do nível.
+                    currentDownloadingLevel = index;
+                    btnLv[index].setEnabled(false);
+
+                    if (ContextCompat.checkSelfPermission(rootView.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        Log.d("Tem permissão?  ", "SIM");
+
+                        downloadVideos();
+
+                        //TODO: chamar AsyncTask para fazer requisição dos dados.
+                        // new LevelDownloadTask(/*grasp*/).execute();
+
+                    } else {
+                        Log.d("Tem permissão?  ", "NÃO");
+                        // Request permission from the user
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                    }
                 }
             });
         }else{
@@ -385,16 +324,79 @@ public class LevelsFragment extends Fragment{
         progressBar = rootView.findViewById(R.id.pgBar_lv1);
     }
 
-   /* //change the video path to the local path
-    private void changeVideoPath(){
-        List<ReportStructure> downloadList = dm.lastCompletedDownloads();
-        for (ReportStructure rs: downloadList){
-            int index = Integer.parseInt(rs.name.split("_")[1]);
-            Log.d("path local: ", ""+rs.saveAddress);
-            grasp[index].getExercise().getMidia().setPathVideo(rs.saveAddress);
+    private DownloadListener1 createCustomDownloadLisneter(){
+        DownloadListener1 listener = new DownloadListener1() {
+            @Override
+            public void taskStart(@NonNull DownloadTask task, @NonNull Listener1Assist.Listener1Model model) {
+                Log.d("DownloadVideos","Task " + task.getFilename() + " Started");
 
-        }
-    }*/
+            }
+
+            @Override
+            public void retry(@NonNull DownloadTask task, @NonNull ResumeFailedCause cause) {
+                Log.d("DownloadVideos","retry");
+            }
+
+            @Override
+            public void connected(@NonNull DownloadTask task, int blockCount, long currentOffset, long totalLength) {
+
+            }
+
+            @Override
+            public void progress(@NonNull DownloadTask task, long currentOffset, long totalLength) {
+                float relativeProgress = ((float)currentOffset/totalLength);
+                float progress = (relativeProgress / grasp.length);
+                //Log.d("grasp", "relativeProgress: " + relativeProgress);
+                //Log.d("Download "+task.getFilename()+":", ""+((progress)));
+
+                progressBar.setProgress(100 * (progress+totalProgress));
+            }
+
+            @Override
+            public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause, @NonNull Listener1Assist.Listener1Model model) {
+                Log.d("taskEnd", "Task " + task.getFilename() + " - Expected: " + EndCause.COMPLETED.name() + "\ntaskEnd: " + cause.name());
+
+                if (EndCause.COMPLETED.name().equals(cause.name())) {
+                    downloadsCompleted.add(task.getId());
+                    Log.d("DownloadVideos", "end1: " + downloadsCompleted.size() + " == " + grasp.length);
+
+                    if (downloadsCompleted.size() == grasp.length) {//Last video
+                        downloadsCompleted.clear();
+                        levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
+
+                        List<Long> exerciseQueue = new ArrayList<>();
+                        for (int i = 0; i < grasp.length; i++) {
+                            Log.d("filePath", "" + task.getFile().getPath());
+                            grasp[i].getExercise().getMidia().setPathVideo(task.getFile().getPath());
+                            grasp[i].save();
+
+                            exerciseQueue.add(grasp[i].getId());
+                        }
+
+                        userProgress = new Progress(exerciseQueue);
+
+                        long id = userProgress.save();
+                        Log.d("UserProgress", "Exercise: "+Progress.findById(Progress.class, id));
+                        levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
+                        playProgressBarAnimation(true);
+                        btnLv[currentDownloadingLevel].setEnabled(true);
+                        totalProgress = 0;
+
+                    } else { //If still didn't finish all the videos
+                        totalProgress = (float)(currentDownloadingExerciseIndex + 1) / (float)grasp.length;
+                        currentDownloadingExerciseIndex++; //next exercise index
+                        tasks[currentDownloadingExerciseIndex].enqueue(this); // starts exercise
+                    }
+
+                } else {
+                    Log.d("DownloadVideosEndCause", "" + cause.name());
+                    progressBar.setProgress(totalProgress);
+                    task.enqueue(this);
+                }
+            }
+        };
+        return listener;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -411,90 +413,6 @@ public class LevelsFragment extends Fragment{
 
     }
 
-/*
-
-    //-----------------------------------DOWNLOAD MANAGER--------------------------------------\\
-
-    @Override
-    public void OnDownloadStarted(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadPaused(long taskId) {
-
-    }
-
-    @Override
-    public void onDownloadProcess(long taskId, double percent, long downloadedLength) {
-        final float progress = ((float)(percent / 100)) / grasp.length;
-        Log.d("Download "+taskId+":", ""+((float)(percent / 100)));
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setProgress(progressBar.getProgress()+progress);
-            }
-        });
-
-    }
-
-    @Override
-    public void OnDownloadFinished(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadRebuildStart(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadRebuildFinished(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadCompleted(long taskId) {
-        if(downloadsCompleted == null){
-            downloadsCompleted = new ArrayList<>();
-        }
-
-        downloadsCompleted.add(taskId);
-
-        changeVideoPath();//change video path to local path
-        List<Long> exerciseQueue = new ArrayList<>();
-        if(downloadsCompleted.size() == grasp.length){
-            downloadsCompleted = null;
-            levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
-
-            for (int i = 0; i <= grasp.length; i++){
-                grasp[i].save();
-
-                exerciseQueue.add(grasp[i].getId());
-            }
-
-            userProgress = new Progress(exerciseQueue);
-            userProgress.save();
-
-            levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
-            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    playProgressBarAnimation(true);
-                    btnLv[currentDownloadingLevel].setEnabled(true);
-                }
-            });
-
-        }
-    }
-
-    @Override
-    public void connectionLost(long taskId) {
-        Log.d("ERRO DE CONEXÃO: ", "conexão perdida!");
-    }
-*/
-
-
 
     //---------------------------LEVEL DOWNLOAD ASYNCTASK---------------------------------------\\
     private class LevelDownloadTask extends AsyncTask<Void, Void, Void> {
@@ -505,20 +423,19 @@ public class LevelsFragment extends Fragment{
                 }*/
         @Override
         protected Void doInBackground(Void... voids) {
-            PermitionController controller = new PermitionController();
-            permitions = controller.getExercises();
+            PermissionController controller = new PermissionController();
+            permitions = controller.getExercises(getContext());
 
-            Log.d("doINBackground:", " "+permitions[1].getGrasp().getId());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             //downloadLevel(/*grasp*/);
-            Grasp graspTest = Grasp.findById(Grasp.class, 1);
-            if(graspTest != null){
+            List<Grasp> graspsStored = Grasp.listAll(Grasp.class);
+            if(graspsStored.size() > 0){
                 Log.d("SUGAR ORM:", "NAO NULO");
-                if (permitions[0].getGrasp().getId() != graspTest.getId()) { //TODO: Vericando se os mesmos dados ja existem localmente. -Melhorar depois-
+                if (permitions.length != graspsStored.size()) { //TODO: Vericando se os mesmos dados ja existem localmente. -Melhorar depois-
                     Grasp.deleteAll(Grasp.class); //delete all data stored previously.
                     manageResponseData();
                 }
@@ -526,115 +443,39 @@ public class LevelsFragment extends Fragment{
                 Log.d("SUGAR ORM:", "NULO");
                 manageResponseData();
             }
-
-            /*try {
-
-                if (gras1 != null) {
-                }else{
-                    Log.d("GRASP!", "E NULL");
-                }
-            }catch(SQLException e){
-                    Log.d("Nao existe!", "@@@");
-                    manageResponseData();
-            }*/
         }
 
         private void manageResponseData() {
-            grasp = new Grasp[permitions.length];
-            for (int i = 0; i < permitions.length; i++) {
-                grasp[i] = permitions[i].getGrasp();
-                grasp[i].getLatestUpdate();
-               // Log.d("manageResponseData for","Iterator: "+i);
-                //grasp[i].setId(Long.parseLong("1"));
-                Log.d("manageResponseData for","OBJECT TO STRING: \n"+ permitions[i].getId()+"\n"+grasp[i].getLatestUpdate());
+            if (permitions != null) {
 
-                grasp[i].save();
-            }
+                grasp = new Grasp[permitions.length];
 
-            int currentLevel = grasp[0].getLevel().getLevel() - 1;
-            for (int i = 0; i < levelStatus.length; i++) {
-                if (i != currentLevel) {
-                    levelStatus[i] = getContext().getString(R.string.LV_STATUS_DISABLED);
-                } else {
-                    levelStatus[i] = getContext().getString(R.string.LV_STATUS_DOWNLOAD);
+                permitions[0].getPatient().save();//saves the patient data.
+                for (int i = 0; i < permitions.length; i++) {
+                    grasp[i] = permitions[i].getGrasp();
+                    grasp[i].getLatestUpdate();
+
+                    grasp[i].save();
+
                 }
+
+                int currentLevel = grasp[0].getLevel().getLevel() - 1;
+                for (int i = 0; i < levelStatus.length; i++) {
+                    if (i != currentLevel) {
+                        levelStatus[i] = getContext().getString(R.string.LV_STATUS_DISABLED);
+                    } else {
+                        levelStatus[i] = getContext().getString(R.string.LV_STATUS_DOWNLOAD);
+                    }
+                }
+                levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
+                updateLevelStatus(currentLevel);//updates the icons
             }
-            levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
-            updateLevelStatus(currentLevel);//updates the icons
+            else {
+                Log.d("PERMITION_RESPONSE", "manageResponseData: Permition null");
+            }
         }
     }
 
-    private DownloadListener1 createCustomDownloadLisneter(){
-        DownloadListener1 listener = new DownloadListener1() {
-            @Override
-            public void taskStart(@NonNull DownloadTask task, @NonNull Listener1Assist.Listener1Model model) {
-                Log.d("DownloadVideos","taskStart");
-            }
-
-            @Override
-            public void retry(@NonNull DownloadTask task, @NonNull ResumeFailedCause cause) {
-                Log.d("DownloadVideos","retry");
-            }
-
-            @Override
-            public void connected(@NonNull DownloadTask task, int blockCount, long currentOffset, long totalLength) {
-                Log.d("DownloadVideos","connected");
-
-            }
-
-            @Override
-            public void progress(@NonNull DownloadTask task, long currentOffset, long totalLength) {
-                //final float progress = ((float)currentOffset/totalLength);
-                float relativeProgress = ((float)currentOffset/totalLength);
-                float progress = (relativeProgress / grasp.length);
-                Log.d("grasp", "grasp length: " + grasp.length + "\nrelativeProgress: " + relativeProgress);
-                Log.d("Download "+task.getFilename()+":", ""+((progress)));
-
-                progressBar.setProgress(progressBar.getProgress()+progress);
-            }
-
-            @Override
-            public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause, @NonNull Listener1Assist.Listener1Model model) {
-                Log.d("taskEnd", "message Expected: " + EndCause.COMPLETED.name() + "\ntaskEnd: "+ cause.name());
-                if (EndCause.COMPLETED.name().equals(cause.name())) {
-                    /*if (downloadsCompleted == null) {
-                        downloadsCompleted = new ArrayList<>();
-                    }*/
-                    downloadsCompleted.add(task.getId());
-                    //changeVideoPath();//change video path to local path
-                    Log.d("DownloadVideos", "end1: " + downloadsCompleted.size() + " == " + grasp.length);
-
-                    if (downloadsCompleted.size() == grasp.length) {
-                        Log.d("DownloadVideos", "end2.3");
-                        downloadsCompleted.clear();
-                        Log.d("DownloadVideos", "end2.4");
-                        levelStatus[currentDownloadingLevel] = getString(R.string.LV_STATUS_ENABLED);
-                        Log.d("DownloadVideos", "end3");
-                        List<Long> exerciseQueue = new ArrayList<>();
-                        for (int i = 0; i < grasp.length; i++) {
-                            Log.d("filePath", ""+task.getFile().getPath());
-                            grasp[i].getExercise().getMidia().setPathVideo(task.getFile().getPath());
-                            grasp[i].save();
-
-                            exerciseQueue.add(grasp[i].getId());
-                        }
-                        Log.d("DownloadVideos", "end4");
-                        userProgress = new Progress(exerciseQueue);
-                        userProgress.save();
-                        levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
-                        Log.d("DownloadVideos", "end5");
-                        playProgressBarAnimation(true);
-                        btnLv[currentDownloadingLevel].setEnabled(true);
-
-                        Log.d("DownloadVideos", "end-End");
-                    }
-
-                }else
-                    Log.d("DownloadVideosEndCause", "" + cause.name());
-            }
-        };
-        return listener;
-    }
 }
 
 

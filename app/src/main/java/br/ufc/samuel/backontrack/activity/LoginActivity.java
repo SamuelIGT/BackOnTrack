@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            loginResponse = loginController.login(email, password);
+            loginResponse = loginController.login(email, password, LoginActivity.this);
             return null;
         }
 
@@ -200,7 +200,6 @@ public class LoginActivity extends AppCompatActivity {
             }else{
                 //If some error occur
                 Log.d("LOGIN RESPONSE: ", loginResponse);
-                Log.d("R String: ", getString(R.string.login_success_msg));
                 Toast.makeText(LoginActivity.this, "Ocorreu algum erro no login. Tente novamente.", Toast.LENGTH_LONG);
             }
         }

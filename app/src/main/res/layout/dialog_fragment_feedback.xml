@@ -225,6 +225,7 @@
             />
 
         <EditText
+            android:id="@+id/feedback_alert_editText"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
             android:layout_marginStart="24dp"

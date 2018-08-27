@@ -1,8 +1,10 @@
 package br.ufc.samuel.backontrack.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 public class Midia extends SugarRecord {
+    @Ignore
     private transient Long id;
     private String pathVideo;
     private String title;
@@ -12,14 +14,6 @@ public class Midia extends SugarRecord {
     public Midia(String pathVideo, String title){
         this.pathVideo = pathVideo;
         this.title = title;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getPathVideo() {

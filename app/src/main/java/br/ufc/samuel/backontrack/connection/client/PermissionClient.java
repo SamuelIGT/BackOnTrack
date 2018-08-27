@@ -10,11 +10,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.HttpURLConnection;
 
-public class PermitionClient {
+public class PermissionClient {
     private String url;
     private RestTemplate restTemplate;
 
-    public PermitionClient(String baseUrl) {
+    public PermissionClient(String baseUrl) {
         this.url = baseUrl + "/permitions";
         this.restTemplate = new RestTemplate();
     }
@@ -95,7 +95,7 @@ public class PermitionClient {
                 "                    }\n" +
                 "                ]\n" +
                 "            },\n" +
-                "            \"tip\": null,\n" +
+                "            \"tip\": \"BOTÕES\",\n" +
                 "            \"latestUpdate\": \"2018-04-23T02:11:17.013+0000\",\n" +
                 "            \"sequence\": 0\n" +
                 "        },\n" +
@@ -148,7 +148,7 @@ public class PermitionClient {
                 "                    }\n" +
                 "                ]\n" +
                 "            },\n" +
-                "            \"tip\": null,\n" +
+                "            \"tip\": \"BOTÕES\",\n" +
                 "            \"latestUpdate\": \"2018-04-23T02:11:17.013+0000\",\n" +
                 "            \"sequence\": 0\n" +
                 "        },\n" +
@@ -201,7 +201,7 @@ public class PermitionClient {
                 "                    }\n" +
                 "                ]\n" +
                 "            },\n" +
-                "            \"tip\": null,\n" +
+                "            \"tip\": \"BOTÕES\",\n" +
                 "            \"latestUpdate\": \"2018-04-23T02:40:41.142+0000\",\n" +
                 "            \"sequence\": 0\n" +
                 "        },\n" +

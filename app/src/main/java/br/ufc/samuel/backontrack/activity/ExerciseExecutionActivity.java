@@ -43,6 +43,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     private AnimatedVectorDrawableCompat avdStopToPlay;
     private ValueAnimator pgBarOutlineAnim;
     private Grasp currentExercise;
+    private Progress progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,16 +76,12 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     }
 
     private void prepareVideo() {
-        long currentExerciseId = Progress.findById(Progress.class, 1).getExercisesQueue().get(0);
+        progress = Progress.findById(Progress.class, 1);
+        long currentExerciseId = progress.getExercisesQueue().get(0);
 
-        List<Grasp> exercises = Grasp.listAll(Grasp.class);
+        Log.d("CurrentExerciseID", "prepareVideo: "+ currentExerciseId);
 
-        currentExercise = new Grasp();
-        for(Grasp exercise: exercises){
-            if(exercise.getId() == currentExerciseId){
-                currentExercise = exercise;
-            }
-        }
+        currentExercise = Grasp.find(Grasp.class, "id = ?", ""+currentExerciseId).get(0);
 
         videoView.setVideoPath(currentExercise.getExercise().getMidia().getPathVideo());
         videoView.seekTo(100);
@@ -138,7 +135,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     btnPgBar.setImageDrawable(avdStopToPlay);
                     avdStopToPlay.start();//starts the play icon transition.
                     chronometer.stopTimer();
-                    FeedbackDialogFragment feedbackDialogFragment = new FeedbackDialogFragment();
+                    FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(currentExercise.getId(), getString(R.string.ARGS_FEEDBACK_DIALOG));
                     feedbackDialogFragment.show(getSupportFragmentManager(), "Dialog Feedback");
                     }
                 }

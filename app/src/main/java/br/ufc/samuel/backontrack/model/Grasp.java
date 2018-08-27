@@ -2,10 +2,12 @@ package br.ufc.samuel.backontrack.model;
 
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.Date;
 
 public class Grasp extends SugarRecord{
+    @Ignore
     private transient Long id;
     private Exercise exercise;
     private Level level;
@@ -15,7 +17,6 @@ public class Grasp extends SugarRecord{
     private int sequence;
 
     public Grasp() {
-
     }
 /*
     public Grasp(Long id, Exercise exercise, Level level, Recommendation recommendation, String tip, Date updateDate, int sequence) {
@@ -34,14 +35,6 @@ public class Grasp extends SugarRecord{
         this.tip = tip;
         this.sequence = sequence;
     }*/
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Exercise getExercise() {
         return exercise;
@@ -87,4 +80,12 @@ public class Grasp extends SugarRecord{
 
     public void setSequence(int sequence) { this.sequence = sequence; }
 
+    @Override
+    public long save() {
+        exercise.save();
+        level.save();
+        recommendation.save();
+
+        return super.save();
+    }
 }

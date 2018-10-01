@@ -67,4 +67,5 @@ public class Progress extends SugarRecord {
         serializedReportsQueue = gson.toJson(serializedReportsQueue);
         return super.save();
     }
+
 }

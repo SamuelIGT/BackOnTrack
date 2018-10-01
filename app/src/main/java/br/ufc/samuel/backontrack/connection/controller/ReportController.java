@@ -40,11 +40,12 @@ public class ReportController extends ConnectionController {
             if (response[0].equals("" + HttpURLConnection.HTTP_OK)) {
                 reportSended = true;
 
-                return reportSended;
+
             } else {
                 Log.d("REPORT_POST: ", "ERROR");
+                reportSended = false;
             }
-
+            return reportSended;
         }
         return false;
     }

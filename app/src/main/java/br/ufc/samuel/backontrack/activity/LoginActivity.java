@@ -117,9 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         }else {
             edtRegistration.requestFocus();
         }
-
-        //TODO: Realizar chamada de metodo de login do servidor.
-        //TODO: Se o login for válido guardar no banco local o login e senha.
     }
 
 

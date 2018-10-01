@@ -135,7 +135,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     btnPgBar.setImageDrawable(avdStopToPlay);
                     avdStopToPlay.start();//starts the play icon transition.
                     chronometer.stopTimer();
-                    FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(currentExercise.getId(), getString(R.string.ARGS_FEEDBACK_DIALOG));
+                    FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(currentExercise.getId(), getString(R.string.ARGS_FEEDBACK_DIALOG), chronometer.getTimerSec());
                     feedbackDialogFragment.show(getSupportFragmentManager(), "Dialog Feedback");
                     }
                 }

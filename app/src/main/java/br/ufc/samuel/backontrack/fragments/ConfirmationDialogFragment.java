@@ -89,8 +89,6 @@ public class ConfirmationDialogFragment extends DialogFragment {
                                 dismiss();
                             }
                         }, 700);
-
-                        //TODO: fechar fragmento pai e esperar 1 segundo antes de fechar esse.
                     }
 
                     @Override

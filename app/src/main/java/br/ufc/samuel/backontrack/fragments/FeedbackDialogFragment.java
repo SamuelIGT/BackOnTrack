@@ -2,6 +2,8 @@ package br.ufc.samuel.backontrack.fragments;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -25,6 +27,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import br.ufc.samuel.backontrack.R;
+import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
+import br.ufc.samuel.backontrack.connection.controller.ReportController;
 import br.ufc.samuel.backontrack.model.Grasp;
 import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.model.Report;
@@ -76,6 +80,7 @@ public class FeedbackDialogFragment extends DialogFragment {
         findViews();
         setButtonsClickListeners();
 
+        progress = Progress.findById(Progress.class, 1);
         report = new Report();
 
         return rootView;
@@ -86,16 +91,15 @@ public class FeedbackDialogFragment extends DialogFragment {
         feedbackNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:Chamar metodo de criar relatorio/enviar e finalizar.
-                finishExercise();
 
-                getActivity().finish();
+                finishExercise(true);
+
             }
         });
         feedbackYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishExercise();
+                finishExercise(false);
                 //TODO: Finalizar activity ExerciceExcution e iniciar uma nova
             }
         });
@@ -283,7 +287,7 @@ public class FeedbackDialogFragment extends DialogFragment {
         effortButtons.add(new EffortButton(5, (TextView)rootView.findViewById(R.id.title_effort_lv_5), (ImageButton)rootView.findViewById(R.id.ic_effort_lv_5)));
     }
 
-    private void finishExercise(){
+    private void finishExercise(boolean isFinishingExercises){
         graspId = getArguments().getLong(getString(R.string.ARGS_FEEDBACK_DIALOG));
         Grasp grasp = Grasp.findById(Grasp.class, graspId);
 
@@ -300,10 +304,44 @@ public class FeedbackDialogFragment extends DialogFragment {
 
         report.setDate(Calendar.getInstance().getTime());
 
-        dismiss();
-        //TODO:Tentar fazer o upload. Caso contrario, adicionar na fila de upload.
+        new ReportUpload(isFinishingExercises).execute();
 
         progress.getExercisesQueue().remove(0);//removes the first member of the list, which is always the current exercise.
+    }
 
+    private class ReportUpload extends AsyncTask<Void, Void, Void>{
+
+        private boolean reportSended;
+        private boolean isFinishingExercises;
+
+        public ReportUpload(boolean isFinishingExercises) {
+            this.isFinishingExercises = isFinishingExercises;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ReportController controller = new ReportController();
+            reportSended = controller.sendReport(report, getContext());
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            if(!reportSended){
+                progress.getReportSubmissionQueue().add(report);
+                progress.save();
+            }
+
+            if(!isFinishingExercises){
+                Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+            }
+
+            dismiss();
+            getActivity().finish();
+        }
     }
 }

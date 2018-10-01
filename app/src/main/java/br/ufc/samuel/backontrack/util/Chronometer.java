@@ -138,6 +138,15 @@ public class Chronometer {
         int[] time = {Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2])};
         return  time;
     }
+
+    public int getTimerSec() {
+        String timeText = timer.getText().toString();
+        String[] timeString = timeText.split(":");
+        int[] time = {Integer.parseInt(timeString[0]), Integer.parseInt(timeString[1]), Integer.parseInt(timeString[2])};
+
+
+        return time[1] + (time[0] * 60);
+    }
     //---------------------------Runnable--------------------------------------
     Runnable r = new Runnable() {
         @Override

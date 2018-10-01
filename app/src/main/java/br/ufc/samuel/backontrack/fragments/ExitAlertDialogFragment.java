@@ -22,7 +22,7 @@ public class ExitAlertDialogFragment extends DialogFragment {
     private View rootView;
     private Button btnYes;
     private Button btnNo;
-
+    
     public ExitAlertDialogFragment() {
     }
 

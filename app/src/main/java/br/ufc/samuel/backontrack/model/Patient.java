@@ -1,11 +1,12 @@
 package br.ufc.samuel.backontrack.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 public class Patient extends SugarRecord{
-	@Ignore
-	private transient Long id;
+
+	private Long patientId;
 	private String registration;
 	private String name;
 	private String phone;
@@ -26,6 +27,16 @@ public class Patient extends SugarRecord{
 		this.phoneParent = phoneParent;
 		this.progress = 1;
 
+	}
+
+	@SerializedName("id")
+	public Long getPatientId() {
+		return patientId;
+	}
+
+	@SerializedName("id")
+	public void setPatientId(Long patientId) {
+		this.patientId = patientId;
 	}
 
 	public String getName() {
@@ -86,7 +97,8 @@ public class Patient extends SugarRecord{
 
     @Override
     public long save() {
-        responsible.save();
+		if(responsible != null)
+        	responsible.save();
 	    return super.save();
     }
 }

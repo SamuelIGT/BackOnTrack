@@ -39,7 +39,7 @@ public class PermissionClient {
             e.printStackTrace();
         }
 
-        response[1] = responseMock();//TODO:DELETAR
+        //response[1] = responseMock();//TODO:DELETAR
 
         return response;
     }

@@ -4,8 +4,8 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 public class Midia extends SugarRecord {
-    @Ignore
-    private transient Long id;
+
+    private Long midiaId;
     private String pathVideo;
     private String title;
 
@@ -13,6 +13,22 @@ public class Midia extends SugarRecord {
 
     public Midia(String pathVideo, String title){
         this.pathVideo = pathVideo;
+        this.title = title;
+    }
+
+    public Long getMidiaId() {
+        return midiaId;
+    }
+
+    public void setMidiaId(Long midiaId) {
+        this.midiaId = midiaId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
         this.title = title;
     }
 

@@ -5,8 +5,8 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 public class Responsible extends SugarRecord{
-	@Ignore
-	private transient Long id;
+
+	private Long resposableId;
 	private String email;
 	private String password;
 	private String name;
@@ -19,6 +19,14 @@ public class Responsible extends SugarRecord{
 		this.email = email;
 		this.password = password;
 		this.name = name;
+	}
+
+	public Long getResposableId() {
+		return resposableId;
+	}
+
+	public void setResposableId(Long resposableId) {
+		this.resposableId = resposableId;
 	}
 
 	public String getEmail() {

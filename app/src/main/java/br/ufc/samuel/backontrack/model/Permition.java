@@ -1,16 +1,34 @@
 package br.ufc.samuel.backontrack.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 public class Permition extends SugarRecord{
-    @Ignore
-    private transient Long id;
+
+    private Long permitionId;
     private boolean isUnlocked = false;
     private Grasp grasp;
     private Patient patient;
 
     public Permition(){}
+
+    public Permition(Long permitionId, boolean isUnlocked, Grasp grasp, Patient patient) {
+        this.permitionId = permitionId;
+        this.isUnlocked = isUnlocked;
+        this.grasp = grasp;
+        this.patient = patient;
+    }
+
+    @SerializedName("id")
+    public Long getPermitionId() {
+        return permitionId;
+    }
+
+    @SerializedName("id")
+    public void setPermitionId(Long permitionId) {
+        this.permitionId = permitionId;
+    }
 
     public boolean isUnlocked() {
         return isUnlocked;

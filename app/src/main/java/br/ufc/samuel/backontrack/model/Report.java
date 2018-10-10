@@ -3,22 +3,33 @@ package br.ufc.samuel.backontrack.model;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Report extends SugarRecord{
-	@Ignore
-	private Long id;
+
+	private Long reportId;
 	private Permition permition;
 	private String status;
 	private int time;
 	private int effortLevel;
-	private Date date;
+	private String date;
 	private String message;
 	private int sets;
 	private int repetitions; //TODO:Remover esse atributo no servidor.
 
 	public Report(){
 
+	}
+
+	public Long getReportId() {
+		return reportId;
+	}
+
+	public void setReportId(Long reportId) {
+		this.reportId = reportId;
 	}
 
 	public Permition getPermition() { return permition; }
@@ -49,12 +60,14 @@ public class Report extends SugarRecord{
 		this.effortLevel = effortLevel;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
 	public void setDate(Date date) {
-		this.date = date;
+		//SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm a z");
+		String dateString = ""+date.getTime();
+		this.date = dateString;
 	}
 
 	public String getMessage() {

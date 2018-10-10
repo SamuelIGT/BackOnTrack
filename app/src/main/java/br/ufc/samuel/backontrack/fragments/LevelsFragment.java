@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
@@ -31,10 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
+import br.ufc.samuel.backontrack.activity.LoginActivity;
 import br.ufc.samuel.backontrack.connection.controller.PermissionController;
+import br.ufc.samuel.backontrack.connection.controller.ReportController;
 import br.ufc.samuel.backontrack.model.Grasp;
 import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Progress;
+import br.ufc.samuel.backontrack.model.Report;
+import br.ufc.samuel.backontrack.model.Token;
 import br.ufc.samuel.backontrack.util.DownloadUtils;
 import br.ufc.samuel.backontrack.util.preferences.LevelPreferences;
 import br.ufc.samuel.backontrack.util.showcase.CustomShowcaseView;
@@ -55,6 +60,7 @@ public class LevelsFragment extends Fragment{
     private int currentDownloadingExerciseIndex;
     private DownloadTask[] tasks;
     private float totalProgress;
+    private FrameLayout loadingLayout;
 
     public LevelsFragment() {
         // Required empty public constructor
@@ -78,7 +84,8 @@ public class LevelsFragment extends Fragment{
 
         downloadsCompleted = new ArrayList<>();
 
-        new LevelDownloadTask().execute();
+        new LevelDownloadTask(this).execute();
+        //TODO: Chamar new ReportUpload().execute;
 
         //TODO:Verificar se algum nivel foi desbloqueado(servidor).
 
@@ -322,6 +329,7 @@ public class LevelsFragment extends Fragment{
                 rootView.findViewById(R.id.btn_lv2),
                 rootView.findViewById(R.id.btn_lv3)};
         progressBar = rootView.findViewById(R.id.pgBar_lv1);
+        loadingLayout = rootView.findViewById(R.id.layout_loading);
     }
 
     private DownloadListener1 createCustomDownloadLisneter(){
@@ -346,8 +354,6 @@ public class LevelsFragment extends Fragment{
             public void progress(@NonNull DownloadTask task, long currentOffset, long totalLength) {
                 float relativeProgress = ((float)currentOffset/totalLength);
                 float progress = (relativeProgress / grasp.length);
-                //Log.d("grasp", "relativeProgress: " + relativeProgress);
-                //Log.d("Download "+task.getFilename()+":", ""+((progress)));
 
                 progressBar.setProgress(100 * (progress+totalProgress));
             }
@@ -414,13 +420,15 @@ public class LevelsFragment extends Fragment{
     }
 
 
+
     //---------------------------LEVEL DOWNLOAD ASYNCTASK---------------------------------------\\
     private class LevelDownloadTask extends AsyncTask<Void, Void, Void> {
-        Permition[] permitions;
+        private Fragment fragment;
+        private Permition[] permitions;
 
-        /*        public LevelDownloadTask(Grasp grasp){
-                    this.grasp = grasp;
-                }*/
+        public LevelDownloadTask(Fragment fragment){
+                    this.fragment = fragment;
+        }
         @Override
         protected Void doInBackground(Void... voids) {
             PermissionController controller = new PermissionController();
@@ -431,17 +439,35 @@ public class LevelsFragment extends Fragment{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //downloadLevel(/*grasp*/);
-            List<Grasp> graspsStored = Grasp.listAll(Grasp.class);
-            if(graspsStored.size() > 0){
-                Log.d("SUGAR ORM:", "NAO NULO");
-                if (permitions.length != graspsStored.size()) { //TODO: Vericando se os mesmos dados ja existem localmente. -Melhorar depois-
-                    Grasp.deleteAll(Grasp.class); //delete all data stored previously.
+            if (permitions != null) {
+
+                List<Grasp> graspsStored = Grasp.listAll(Grasp.class);
+                if (graspsStored.size() > 0) {
+                    Log.d("SUGAR ORM:", "NAO NULO");
+                    if (permitions.length != graspsStored.size()) { //TODO: Vericando se os mesmos dados ja existem localmente. -Melhorar depois-
+                        Grasp.deleteAll(Grasp.class); //delete all data stored previously.
+                        manageResponseData();
+                    }else{
+                        grasp = new Grasp[graspsStored.size()];
+                        graspsStored.toArray(grasp);
+                        Log.d("GRASP SIZE:", "SIZE: "+grasp.length);
+
+                    }
+                } else {
+                    Log.d("SUGAR ORM:", "NULO");
                     manageResponseData();
                 }
-            }else{
-                Log.d("SUGAR ORM:", "NULO");
-                manageResponseData();
+            }else {
+                Log.d("TOKEN EXPIRED/INVALID", "Please, try to log in again.");
+                Token token = Token.findById(Token.class, 1);
+                token.setToken(getString(R.string.TOKEN_EXPIRED));
+                token.save();
+
+                Intent intent = new Intent(rootView.getContext(), LoginActivity.class);
+//                    intent.putExtra(getString(R.string.LEVEL_NUMBER), index+1);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+                getActivity().finish();
             }
         }
 
@@ -450,7 +476,9 @@ public class LevelsFragment extends Fragment{
 
                 grasp = new Grasp[permitions.length];
 
+                Log.d("PATIENT_SAVE", "NAME: "+permitions[0].getPatient().getName());
                 permitions[0].getPatient().save();//saves the patient data.
+
                 for (int i = 0; i < permitions.length; i++) {
                     grasp[i] = permitions[i].getGrasp();
                     grasp[i].getLatestUpdate();
@@ -458,6 +486,8 @@ public class LevelsFragment extends Fragment{
                     grasp[i].save();
 
                 }
+
+                Log.d("GRASP_SIZE", "GRASP SIZE: "+grasp.length);
 
                 int currentLevel = grasp[0].getLevel().getLevel() - 1;
                 for (int i = 0; i < levelStatus.length; i++) {
@@ -476,6 +506,48 @@ public class LevelsFragment extends Fragment{
         }
     }
 
+
+    //--------------------------------------------------------------------------------------------\\
+
+    private class ReportUpload extends AsyncTask<Void, Void, Void>{
+        private Boolean[] reportsSended;
+        private Progress progress;
+        List<Report> reportSubmissionQueue;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            loadingLayout.setVisibility(View.VISIBLE);
+
+            progress = Progress.findById(Progress.class, 1);
+
+            if(progress != null) {
+                reportSubmissionQueue = progress.getReportSubmissionQueue();
+                reportsSended = new Boolean[reportSubmissionQueue.size()];
+                ReportController controller = new ReportController();
+
+                for (int i = 0; i < reportSubmissionQueue.size(); i++) {
+                    reportsSended[i] = controller.sendReport(reportSubmissionQueue.get(i), getContext());
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (progress != null) {
+                List<Report> submissionFailed = new ArrayList<>();
+                for (int i = 0; i < reportsSended.length; i++) {
+                    if (!reportsSended[0]) {
+                        submissionFailed.add(reportSubmissionQueue.get(i));
+                    }
+                }
+                progress.setReportSubmissionQueue(submissionFailed);
+
+                loadingLayout.setVisibility(View.GONE);
+
+            }
+        }
+    }
 }
 
 

@@ -37,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.d("Token", "PASSOU PELO LOGIN!");
+
         loginController = new LoginController();
         findViews();
         animateLogoText(logo);
@@ -46,9 +48,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyAuthorization() {//TODO: Usar isso na Splash Screen de forma que LoginActivity so seja chamada se nao houver um Token.
         Token token = Token.findById(Token.class, 1);
+
         if(token != null){
-            Log.d("Token", ""+token.getToken());
-            startMainActivity();
+            if(!getString(R.string.TOKEN_EXPIRED).equals(token.getToken())) {
+                Log.d("Token", "" + token.getToken());
+                startMainActivity();
+            }
         }
     }
 
@@ -103,10 +108,10 @@ public class LoginActivity extends AppCompatActivity {
         if (edtPassword.getText() != null) {
             password = edtPassword.getText().toString();
         }
-        if (registration != "") {
-            if (password != "") {
-                registration = "admin@ufc.com";//TODO: Apagar essa linha.
-                password = "admini9move";//TODO: Apagar essa linha.
+        if (registration.equals("")) {
+            if (password.equals("")) {
+                registration = "201810404423";//TODO: Apagar essa linha.
+                password = "201810404423";//TODO: Apagar essa linha.
 
                 loading.setVisibility(View.VISIBLE);//Mostrar Barra de progresso circular.
                 new LoginTask(registration, password).execute();

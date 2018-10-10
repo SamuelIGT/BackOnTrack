@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import java.net.HttpURLConnection;
@@ -11,6 +13,8 @@ import java.net.HttpURLConnection;
 import br.ufc.samuel.backontrack.connection.client.PermissionClient;
 import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Token;
+
+import static android.content.ContentValues.TAG;
 
 public class PermissionController extends ConnectionController {
     private final String url = "http://i9move.quixada.ufc.br/api";
@@ -39,7 +43,26 @@ public class PermissionController extends ConnectionController {
 
             if (response[0] == "" + HttpURLConnection.HTTP_OK) {
                 try {
-                    permission = gson.fromJson(response[1], Permition[].class);
+                    JsonArray jsonArrayPermission = gson.fromJson(response[1], JsonArray.class);
+
+                    permission = new Permition[jsonArrayPermission.size()];
+                    for(int i = 0; i < jsonArrayPermission.size(); i++){
+                        JsonObject jsonObjectPermission = jsonArrayPermission.get(i).getAsJsonObject();
+
+                        permission[i] = gson.fromJson(jsonObjectPermission, Permition.class);
+
+                        Long permissionId = jsonObjectPermission.get("id").getAsLong();
+                        Long patientId = jsonObjectPermission.get("patient").getAsJsonObject().get("id").getAsLong();
+                        Long graspId = jsonObjectPermission.get("grasp").getAsJsonObject().get("id").getAsLong();
+
+                        Log.d(TAG, "getExercises: Permition ID = " + permissionId + "\nPatient ID = " + patientId + "\nGrasp ID" + graspId);
+
+                        permission[i].getGrasp().setPermitionId(permissionId);
+                        permission[i].getPatient().setPatientId(patientId);
+                        permission[i].getGrasp().setGraspId(graspId);
+                    }
+
+                    //permission = gson.fromJson(response[1], Permition[].class);
                 } catch (IllegalStateException | JsonSyntaxException exception) {
                     exception.printStackTrace();
                     return null;

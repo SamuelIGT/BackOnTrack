@@ -7,8 +7,8 @@ import com.orm.dsl.Ignore;
 import java.util.List;
 
 public class Exercise extends SugarRecord{
-    @Ignore
-    private transient Long id;
+    //@Ignore
+    private /*transient*/ Long exerciseId;
 	private String title;
 	private String description;
 	private Midia midia;
@@ -40,8 +40,12 @@ public class Exercise extends SugarRecord{
 		this.description = description;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setExerciseId(Long id) {
+		this.exerciseId = id;
+	}
+
+	public Long getExerciseId() {
+		return exerciseId;
 	}
 
 	public Midia getMidia() {

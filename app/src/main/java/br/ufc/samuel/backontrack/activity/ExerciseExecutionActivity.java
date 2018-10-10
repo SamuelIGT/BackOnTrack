@@ -77,7 +77,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
 
     private void prepareVideo() {
         progress = Progress.findById(Progress.class, 1);
-        long currentExerciseId = progress.getExercisesQueue().get(0);
+        long currentExerciseId = progress.getExercisesQueue().get(0);//TODO: Verificar se ainda existem exercicios na fila.
 
         Log.d("CurrentExerciseID", "prepareVideo: "+ currentExerciseId);
 
@@ -90,7 +90,8 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(getSupportFragmentManager().findFragmentByTag("Dialog Exit Alert") == null){
-            ExitAlertDialogFragment exitAlertDialogFragment = new ExitAlertDialogFragment();
+            String[] args = {getString(R.string.ARGS_FEEDBACK_DIALOG_ID), getString(R.string.ARGS_FEEDBACK_DIALOG_TIMER)};
+            ExitAlertDialogFragment exitAlertDialogFragment = ExitAlertDialogFragment.newInstance(currentExercise.getId(), args, chronometer.getTimerSec());
         exitAlertDialogFragment.show(getSupportFragmentManager(), "Dialog Exit Alert");
         }else{
             super.onBackPressed();
@@ -98,6 +99,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     }
 
     private void showExerciseStartDialog() {
+        //TODO: Adicionar dinamicamente checkbox de objetos para realizaçao do exercicio.
         ExerciseStartDialogFragment dialogFragment = new ExerciseStartDialogFragment();
         dialogFragment .show(getSupportFragmentManager(), "Dialog Exercise Start");
     }
@@ -135,7 +137,8 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
                     btnPgBar.setImageDrawable(avdStopToPlay);
                     avdStopToPlay.start();//starts the play icon transition.
                     chronometer.stopTimer();
-                    FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(currentExercise.getId(), getString(R.string.ARGS_FEEDBACK_DIALOG), chronometer.getTimerSec());
+                    String[] args = {getString(R.string.ARGS_FEEDBACK_DIALOG_ID), getString(R.string.ARGS_FEEDBACK_DIALOG_TIMER)};
+                    FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(currentExercise.getId(), args, chronometer.getTimerSec());
                     feedbackDialogFragment.show(getSupportFragmentManager(), "Dialog Feedback");
                     }
                 }

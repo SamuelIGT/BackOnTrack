@@ -28,7 +28,9 @@
     <string name="feedback_series_title">Quantas repetições você fez?</string>
     <string name="string_confirm">CONFIRMAR</string>
     <string name="login_success_msg">Login efetuado com sucesso!</string>
-    <string name="ARGS_FEEDBACK_DIALOG">ARGS_FEEDBACK_DIALOG</string>
+    <string name="ARGS_FEEDBACK_DIALOG_ID">ARGS_FEEDBACK_DIALOG_ID</string>
+    <string name="ARGS_FEEDBACK_DIALOG_TIMER">ARGS_FEEDBACK_DIALOG_TIMER</string>
     <string name="EXERCISE_STATUS_1">COMPLETO</string>
     <string name="EXERCISE_STATUS_2">INCOMPLETO</string>
+    <string name="TOKEN_EXPIRED">EXPIRED</string>
 </resources>

@@ -1,14 +1,15 @@
 package br.ufc.samuel.backontrack.model;
 
 
+import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 import java.util.Date;
 
 public class Grasp extends SugarRecord{
-    @Ignore
-    private transient Long id;
+
+    private Long graspId;
     private Exercise exercise;
     private Level level;
     private Recommendation recommendation;
@@ -16,11 +17,13 @@ public class Grasp extends SugarRecord{
     private Date latestUpdate;
     private int sequence;
 
+    private Long permitionId;
+
     public Grasp() {
     }
 /*
-    public Grasp(Long id, Exercise exercise, Level level, Recommendation recommendation, String tip, Date updateDate, int sequence) {
-        this.id = id;
+    public Grasp(Long graspId, Exercise exercise, Level level, Recommendation recommendation, String tip, Date updateDate, int sequence) {
+        this.graspId = graspId;
         this.exercise = exercise;
         this.level = level;
         this.recommendation = recommendation;
@@ -35,6 +38,13 @@ public class Grasp extends SugarRecord{
         this.tip = tip;
         this.sequence = sequence;
     }*/
+    public Long getGraspId() {
+        return graspId;
+    }
+
+    public void setGraspId(Long graspId) {
+        this.graspId = graspId;
+    }
 
     public Exercise getExercise() {
         return exercise;
@@ -79,6 +89,14 @@ public class Grasp extends SugarRecord{
     public int getSequence() { return sequence; }
 
     public void setSequence(int sequence) { this.sequence = sequence; }
+
+    public Long getPermitionId() {
+        return permitionId;
+    }
+
+    public void setPermitionId(Long permitionId) {
+        this.permitionId = permitionId;
+    }
 
     @Override
     public long save() {

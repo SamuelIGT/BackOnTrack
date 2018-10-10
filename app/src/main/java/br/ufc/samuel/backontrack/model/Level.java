@@ -4,8 +4,8 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 
 public class Level extends SugarRecord{
-    @Ignore
-    private transient Long id;
+
+    private Long levelId;
     private int level;
 
     public Level(){
@@ -13,6 +13,14 @@ public class Level extends SugarRecord{
     }
     public Level(int level){
         this.level = level;
+    }
+
+    public Long getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(Long levelId) {
+        this.levelId = levelId;
     }
 
     public int getLevel() {

@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
 import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Token;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by samuel on 8/26/18.
  */
@@ -36,6 +38,9 @@ public class ReportClient {
         headers.set("Authorization", token);
 
         HttpEntity<String> entity = new HttpEntity<>(serializedReport, headers);
+
+        Log.d(TAG, "postReport_TOKEN: " + entity.getHeaders().getAuthorization());
+        Log.d(TAG, "postReport_Report: " + entity.getBody());
 
         try{
             response[1] = restTemplate.postForObject(url, entity, String.class);

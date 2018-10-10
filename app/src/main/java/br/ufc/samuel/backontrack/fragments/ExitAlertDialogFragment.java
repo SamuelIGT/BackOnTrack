@@ -22,8 +22,17 @@ public class ExitAlertDialogFragment extends DialogFragment {
     private View rootView;
     private Button btnYes;
     private Button btnNo;
-    
+
     public ExitAlertDialogFragment() {
+    }
+
+    public static ExitAlertDialogFragment newInstance(Long graspId, String[] argsKey, int timerCount){
+        Bundle args = new Bundle();
+        args.putLong(argsKey[0], graspId);
+        args.putInt(argsKey[1], timerCount);
+        ExitAlertDialogFragment fragment = new ExitAlertDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -46,6 +55,18 @@ public class ExitAlertDialogFragment extends DialogFragment {
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String[] args = {getString(R.string.ARGS_FEEDBACK_DIALOG_ID), getString(R.string.ARGS_FEEDBACK_DIALOG_TIMER)};
+
+                Long exerciseId = getArguments().getLong(args[0]);
+                int timer = getArguments().getInt(args[1]);
+
+
+
+                FeedbackDialogFragment feedbackDialogFragment = FeedbackDialogFragment.newInstance(exerciseId, args, timer);
+
+                dismiss();
+
+                feedbackDialogFragment.show(getActivity().getSupportFragmentManager(), "Dialog Feedback");
                 //TODO: chamar frament de feedback.
             }
         });

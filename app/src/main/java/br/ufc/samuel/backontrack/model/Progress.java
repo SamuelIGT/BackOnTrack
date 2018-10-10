@@ -29,7 +29,12 @@ public class Progress extends SugarRecord {
     }
 
     public List<Report> getReportSubmissionQueue() {
-        return new Gson().fromJson(serializedReportsQueue, new TypeToken<List<Report>>(){}.getType());
+        reportSubmissionQueue = new Gson().fromJson(serializedReportsQueue, new TypeToken<List<Report>>(){}.getType());
+        if(reportSubmissionQueue == null){
+            reportSubmissionQueue = new ArrayList<>();
+
+        }
+        return reportSubmissionQueue;
     }
 
     public void setReportSubmissionQueue(List<Report> reportSubmissionQueue) {
@@ -37,7 +42,9 @@ public class Progress extends SugarRecord {
     }
 
     public List<Long> getExercisesQueue() {
-        return new Gson().fromJson(serializedExerciseQueue, new TypeToken<List<Long>>(){}.getType());
+        exercisesQueue = new Gson().fromJson(serializedExerciseQueue, new TypeToken<List<Long>>(){}.getType());
+
+        return exercisesQueue;
     }
 
     public void setExercisesQueue(List<Long> exercisesQueue) {
@@ -64,7 +71,7 @@ public class Progress extends SugarRecord {
     public long save() {
         Gson gson = new Gson();
         serializedExerciseQueue = gson.toJson(exercisesQueue);
-        serializedReportsQueue = gson.toJson(serializedReportsQueue);
+        serializedReportsQueue = gson.toJson(reportSubmissionQueue);
         return super.save();
     }
 

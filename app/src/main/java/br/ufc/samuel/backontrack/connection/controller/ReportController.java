@@ -4,8 +4,16 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 
 import br.ufc.samuel.backontrack.connection.client.ReportClient;
@@ -29,11 +37,13 @@ public class ReportController extends ConnectionController {
             String[] response;
             Boolean reportSended = false;
 
-            String serializedReport = gson.toJson(report);
+            JsonElement reportJsonElement = gson.toJsonTree(report);
+
+            String serializedReport = gson.toJson(formatJson(reportJsonElement));
 
             ReportClient client = new ReportClient(url);
 
-            String token = gson.toJson(getToken());
+            String token = getToken().getToken();
 
             response = client.postReport(serializedReport, token);
 
@@ -42,12 +52,34 @@ public class ReportController extends ConnectionController {
 
 
             } else {
-                Log.d("REPORT_POST: ", "ERROR");
+                Log.d("REPORT_POST: ", "ERROR: "+response[0]);
                 reportSended = false;
             }
             return reportSended;
         }
         return false;
+    }
+
+    private JsonObject formatJson(JsonElement reportJsonElement) {
+        JsonObject jsonObject = reportJsonElement.getAsJsonObject();
+        Long id;
+
+        //Adicionando a propriedade "id" em Permition
+        id = jsonObject.get("permition").getAsJsonObject().get("permitionId").getAsLong();
+        jsonObject.get("permition").getAsJsonObject().add("id", gson.toJsonTree(id));
+        //Adicionando a propriedade "id" em Grasp
+        id = jsonObject.get("permition").getAsJsonObject().get("grasp").getAsJsonObject().get("graspId").getAsLong();
+        jsonObject.get("permition").getAsJsonObject().get("grasp").getAsJsonObject().add("id", gson.toJsonTree(id));
+        //Adicionando a propriedade "id" em Patient
+        id = jsonObject.get("permition").getAsJsonObject().get("patient").getAsJsonObject().get("patientId").getAsLong();
+        jsonObject.get("permition").getAsJsonObject().get("patient").getAsJsonObject().add("id", gson.toJsonTree(id));
+
+        //Removing ids propertys
+        jsonObject.get("permition").getAsJsonObject().remove("permitionId");
+        jsonObject.get("permition").getAsJsonObject().get("grasp").getAsJsonObject().remove("graspId");
+        jsonObject.get("permition").getAsJsonObject().get("patient").getAsJsonObject().remove("patientId");
+
+        return jsonObject;
     }
 
 }

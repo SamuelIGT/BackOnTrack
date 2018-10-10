@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,10 +32,14 @@ import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
 import br.ufc.samuel.backontrack.connection.controller.ReportController;
 import br.ufc.samuel.backontrack.model.Grasp;
+import br.ufc.samuel.backontrack.model.Patient;
+import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.model.Report;
 import br.ufc.samuel.backontrack.util.EffortButton;
 import io.codetail.animation.ViewAnimationUtils;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by samuel on 25/01/2018.
@@ -60,10 +66,10 @@ public class FeedbackDialogFragment extends DialogFragment {
 
     public FeedbackDialogFragment() {}
 
-    public static FeedbackDialogFragment newInstance(Long graspId, String argsKey, int timerCount) {
+    public static FeedbackDialogFragment newInstance(Long graspId, String[] argsKey, int timerCount) {
         Bundle args = new Bundle();
-        args.putLong(argsKey, graspId);
-        args.putInt(argsKey, timerCount);
+        args.putLong(argsKey[0], graspId);
+        args.putInt(argsKey[1], timerCount);
         FeedbackDialogFragment fragment = new FeedbackDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -288,21 +294,28 @@ public class FeedbackDialogFragment extends DialogFragment {
     }
 
     private void finishExercise(boolean isFinishingExercises){
-        graspId = getArguments().getLong(getString(R.string.ARGS_FEEDBACK_DIALOG));
+        graspId = getArguments().getLong(getString(R.string.ARGS_FEEDBACK_DIALOG_ID), 1L);
         Grasp grasp = Grasp.findById(Grasp.class, graspId);
+        Patient patient = Patient.listAll(Patient.class).get(0);
+
+        Permition permition = new Permition(grasp.getPermitionId(), true, grasp, patient);
 
         int numberOfSets = Integer.parseInt(repetitionsNumber.getText().toString());
+        Log.d(TAG, "finishExercise: "+grasp.getRecommendation().getSerializedSeries());
+
         report.setRepetitions(grasp.getRecommendation().getSerie().get(0).getRepeats());
         report.setSets(numberOfSets);
 
         String status = (numberOfSets >= grasp.getRecommendation().getSerie().get(0).getSets()) ? getString(R.string.EXERCISE_STATUS_1) : getString(R.string.EXERCISE_STATUS_2);
         report.setStatus(status);
 
-        report.setTime(getArguments().getInt(getString(R.string.ARGS_FEEDBACK_DIALOG)));
+        report.setTime(getArguments().getInt(getString(R.string.ARGS_FEEDBACK_DIALOG_TIMER)));
 
         report.setMessage(alertMessage.getText().toString());
 
         report.setDate(Calendar.getInstance().getTime());
+
+        report.setPermition(permition);
 
         new ReportUpload(isFinishingExercises).execute();
 
@@ -311,7 +324,7 @@ public class FeedbackDialogFragment extends DialogFragment {
 
     private class ReportUpload extends AsyncTask<Void, Void, Void>{
 
-        private boolean reportSended;
+        private Boolean reportSended;
         private boolean isFinishingExercises;
 
         public ReportUpload(boolean isFinishingExercises) {
@@ -321,6 +334,13 @@ public class FeedbackDialogFragment extends DialogFragment {
         @Override
         protected Void doInBackground(Void... voids) {
             ReportController controller = new ReportController();
+            /*if(progress.getReportSubmissionQueue() == null){
+                progress.setReportSubmissionQueue(new ArrayList<Report>());
+            }else{
+                Log.d(TAG, "doInBackground_ReportQueueNotNull: "+progress.getReportSubmissionQueue().size());
+            }*/
+
+            //progress.getRawReportSubmissionQueue().add(report);
             reportSended = controller.sendReport(report, getContext());
 
             return null;
@@ -328,11 +348,11 @@ public class FeedbackDialogFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
             if(!reportSended){
                 progress.getReportSubmissionQueue().add(report);
-                progress.save();
             }
+
+            progress.save();
 
             if(!isFinishingExercises){
                 Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
@@ -343,5 +363,6 @@ public class FeedbackDialogFragment extends DialogFragment {
             dismiss();
             getActivity().finish();
         }
+
     }
 }

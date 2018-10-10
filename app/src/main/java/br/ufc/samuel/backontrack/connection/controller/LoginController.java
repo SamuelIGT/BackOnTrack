@@ -30,7 +30,12 @@ public class LoginController extends ConnectionController{
 
             String response[] = loginClient.getToken(credentialsJson);
             if (response[0] == "" + HttpURLConnection.HTTP_OK) {
-                Token token = new Token(response[1]);
+                Token token = Token.findById(Token.class, 1);
+                if(token != null){
+                    token.setToken(response[1]);
+                }else {
+                    token = new Token(response[1]);
+                }
                 Log.d("Token: ", "" + token.getToken());
                 long id = token.save();
                 Log.d("Token: ", "" + Token.findById(Token.class, 1));

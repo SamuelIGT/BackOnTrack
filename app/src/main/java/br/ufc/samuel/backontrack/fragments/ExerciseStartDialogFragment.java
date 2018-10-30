@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -31,6 +35,16 @@ public class ExerciseStartDialogFragment extends DialogFragment {
     private Button confirm;
     private int checkBoxesNumber = 0;
     private int checkedCheckboxes = 0;
+
+    public static ExerciseStartDialogFragment newInstance(String[] objects, String argsKey){
+        Bundle args = new Bundle();
+        args.putStringArray(argsKey, objects);
+
+        ExerciseStartDialogFragment fragment = new ExerciseStartDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,18 +56,44 @@ public class ExerciseStartDialogFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme);
 
         setUpConfimationButton();
-        getCheckBoxes();
+
+        setupCheckboxes();
+
+        //getCheckBoxes();
         return view;
     }
 
-    private void getCheckBoxes() {
-        RelativeLayout layout = view.findViewById(R.id.layout_check_boxes);
+    private void setupCheckboxes() {
+        LinearLayout parentLayout = view.findViewById(R.id.layout_check_boxes); //Getting the checkboxes layout
 
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            //if the child is a CheckBox
-            if (layout.getChildAt(i) instanceof CheckBox) {
-                checkBoxesNumber ++;
-                CheckBox checkBox = (CheckBox) layout.getChildAt(i);
+        float d = getResources().getDisplayMetrics().density;
+        int checkboxMarginStart = (int)(getResources().getDimension(R.dimen.checkbox_margin_start) * d);
+        int checkboxMarginTop = (int)(getResources().getDimension(R.dimen.checkbox_margin_top) * d);
+
+        //creating the layout parameters
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams checkboxLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        String[] objects = getArguments().getStringArray(getString(R.string.ARGS_EXERCISE_START_DIALOG));
+
+        checkBoxesNumber = objects.length;
+
+        if(objects != null){
+            for(int i = 0; i < objects.length; i++){
+
+                LinearLayout layout = new LinearLayout(view.getContext());
+                TextView text = new TextView(view.getContext());
+                CheckBox checkBox = new CheckBox(view.getContext());
+
+                layout.setOrientation(LinearLayout.HORIZONTAL);
+                layoutParams.setMargins(checkboxMarginStart, checkboxMarginTop, 0, 0);
+                layout.setLayoutParams(layoutParams);
+
+                checkBox.setLayoutParams(checkboxLayoutParams);
+                checkBox.setScaleX(1.5f);
+                checkBox.setScaleY(1.5f);
+                //checkBox.setTextAppearance(view.getContext(), R.style.checkBoxStyle);
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -74,8 +114,36 @@ public class ExerciseStartDialogFragment extends DialogFragment {
                         }
                     }
                 });
+
+                text.setLayoutParams(textViewLayoutParams);
+                text.setPadding(8, 0, 0, 0);
+                text.setGravity(Gravity.CENTER);
+                text.setTextSize(18);
+                text.setText(objects[i]);
+
+                layout.addView(checkBox);
+                layout.addView(text);
+
+                parentLayout.addView(layout);
             }
+        }else{
+            TextView text = new TextView(view.getContext());
+
+            text.setLayoutParams(textViewLayoutParams);
+            text.setPadding(4, 0, 0, 0);
+            text.setGravity(Gravity.CENTER);
+            text.setTextSize(18);
+            text.setText(R.string.NULL_OBJECTS_MESSAGE);
+
+            confirm.setEnabled(true);
         }
+
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     private void setUpConfimationButton() {

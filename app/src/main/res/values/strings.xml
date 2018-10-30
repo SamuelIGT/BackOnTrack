@@ -33,4 +33,10 @@
     <string name="EXERCISE_STATUS_1">COMPLETO</string>
     <string name="EXERCISE_STATUS_2">INCOMPLETO</string>
     <string name="TOKEN_EXPIRED">EXPIRED</string>
+    <string name="ARGS_EXERCISE_START_DIALOG">1962</string>
+    <string name="NULL_OBJECTS_MESSAGE">Sem necessidade de objetos.</string>
+    <string name="PERMITION_REQUEST_SUCESS">Sucesso</string>
+    <string name="PERMITION_REQUEST_ERRO1">Usuário não possui exercícios cadastrados</string>
+    <string name="PERMITION_REQUEST_ERRO2">Sem conexão com a internet</string>
+
 </resources>

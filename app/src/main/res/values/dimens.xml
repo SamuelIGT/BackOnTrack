@@ -16,4 +16,8 @@
     <dimen name="dialog_confirmation_margin_end">20dp</dimen>
     <dimen name="dialog_margin_start">16dp</dimen>
     <dimen name="dialog_margin_end">16dp</dimen>
+
+    <dimen name="checkbox_margin_start">56dp</dimen>
+    <dimen name="checkbox_margin_top">6dp</dimen>
+
 </resources>

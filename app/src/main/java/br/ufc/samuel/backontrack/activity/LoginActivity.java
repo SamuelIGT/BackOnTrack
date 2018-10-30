@@ -108,10 +108,10 @@ public class LoginActivity extends AppCompatActivity {
         if (edtPassword.getText() != null) {
             password = edtPassword.getText().toString();
         }
-        if (registration.equals("")) {
-            if (password.equals("")) {
-                registration = "201810404423";//TODO: Apagar essa linha.
-                password = "201810404423";//TODO: Apagar essa linha.
+        if (!registration.equals("")) {
+            if (!password.equals("")) {
+//                registration = "2018102118340";//TODO: Apagar essa linha.
+//                password = "2018102118340";//TODO: Apagar essa linha.
 
                 loading.setVisibility(View.VISIBLE);//Mostrar Barra de progresso circular.
                 new LoginTask(registration, password).execute();

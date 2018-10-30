@@ -19,6 +19,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -28,8 +30,13 @@ import com.liulishuo.okdownload.core.cause.ResumeFailedCause;
 import com.liulishuo.okdownload.core.listener.DownloadListener1;
 import com.liulishuo.okdownload.core.listener.assist.Listener1Assist;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
+import java.security.Permission;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import br.ufc.samuel.backontrack.R;
 import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
 import br.ufc.samuel.backontrack.activity.LoginActivity;
@@ -61,6 +68,7 @@ public class LevelsFragment extends Fragment{
     private DownloadTask[] tasks;
     private float totalProgress;
     private FrameLayout loadingLayout;
+    private String[] videosPath;
 
     public LevelsFragment() {
         // Required empty public constructor
@@ -89,12 +97,13 @@ public class LevelsFragment extends Fragment{
 
         //TODO:Verificar se algum nivel foi desbloqueado(servidor).
 
+        //TODO:Apagar arquivos do nivel anterior.
+
         //Sets up the icons of the levels
         setUpLevels();
 
         return rootView;
     }
-
 
     private void setUpLevels() {
         Context context = rootView.getContext();
@@ -190,7 +199,7 @@ public class LevelsFragment extends Fragment{
         }
 
         Log.d("DownloadVideos","enqueue");
-
+        videosPath = new String[grasp.length];
         DownloadListener1 listener = createCustomDownloadLisneter();
 
         tasks[currentDownloadingExerciseIndex].enqueue(listener);
@@ -365,6 +374,8 @@ public class LevelsFragment extends Fragment{
                 if (EndCause.COMPLETED.name().equals(cause.name())) {
                     downloadsCompleted.add(task.getId());
                     Log.d("DownloadVideos", "end1: " + downloadsCompleted.size() + " == " + grasp.length);
+                    int index = Integer.parseInt(task.getFilename().split("_")[1]);
+                    videosPath[index] = task.getFile().getPath();
 
                     if (downloadsCompleted.size() == grasp.length) {//Last video
                         downloadsCompleted.clear();
@@ -372,10 +383,12 @@ public class LevelsFragment extends Fragment{
 
                         List<Long> exerciseQueue = new ArrayList<>();
                         for (int i = 0; i < grasp.length; i++) {
-                            Log.d("filePath", "" + task.getFile().getPath());
-                            grasp[i].getExercise().getMidia().setPathVideo(task.getFile().getPath());
+                            Log.d("filePath", "" + task.getFilename());
+
+                            grasp[i].getExercise().getMidia().setPathVideo(videosPath[i]);
                             grasp[i].save();
 
+                            Log.d("taskEnd", "Exercise added to queue: "+grasp[i].getExercise().getTitle());
                             exerciseQueue.add(grasp[i].getId());
                         }
 
@@ -425,6 +438,8 @@ public class LevelsFragment extends Fragment{
     private class LevelDownloadTask extends AsyncTask<Void, Void, Void> {
         private Fragment fragment;
         private Permition[] permitions;
+        private String errorMessage;
+        private Map<String, Permition[]> permitionResponse;
 
         public LevelDownloadTask(Fragment fragment){
                     this.fragment = fragment;
@@ -432,13 +447,30 @@ public class LevelsFragment extends Fragment{
         @Override
         protected Void doInBackground(Void... voids) {
             PermissionController controller = new PermissionController();
-            permitions = controller.getExercises(getContext());
+            permitionResponse = controller.getExercises(getContext());
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            String[] requestMessages = new String[]{
+                    getString(R.string.PERMITION_REQUEST_SUCESS),
+                    getString(R.string.PERMITION_REQUEST_ERRO1),
+                    getString(R.string.PERMITION_REQUEST_ERRO2)};
+
+            for(int i = 0; i < requestMessages.length; i++){
+                permitions = permitionResponse.get(requestMessages[i]);
+
+                if(permitions != null){
+                    if(i != 0){//If is not a "Sucess" (first element of the vector)
+                        Toast.makeText(rootView.getContext(), requestMessages[i], Toast.LENGTH_LONG);
+                    }
+
+                    return;
+                }
+            }
+
             if (permitions != null) {
 
                 List<Grasp> graspsStored = Grasp.listAll(Grasp.class);

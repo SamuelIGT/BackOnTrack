@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context="br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity">
 
-
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -21,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/toolbarText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Garçom com o Copo"

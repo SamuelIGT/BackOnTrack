@@ -37,6 +37,7 @@ import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Progress;
 import br.ufc.samuel.backontrack.model.Report;
 import br.ufc.samuel.backontrack.util.EffortButton;
+import br.ufc.samuel.backontrack.util.preferences.LevelPreferences;
 import io.codetail.animation.ViewAnimationUtils;
 
 import static android.content.ContentValues.TAG;
@@ -315,11 +316,26 @@ public class FeedbackDialogFragment extends DialogFragment {
 
         report.setDate(Calendar.getInstance().getTime());
 
+
         report.setPermition(permition);
 
-        new ReportUpload(isFinishingExercises).execute();
+        Log.d(TAG, "finishExercise: EXERCISE QUEUE SIZE: " + progress.getExercisesQueue().size());
 
-        progress.getExercisesQueue().remove(0);//removes the first member of the list, which is always the current exercise.
+        List<Long> exercisesQueue = progress.getExercisesQueue();
+        exercisesQueue.remove(0);//removes the first member of the list, which is always the current exercise.
+        progress.setExercisesQueue(exercisesQueue);
+        progress.save();
+
+        if(exercisesQueue.size() == 0){
+            //TODO: Mudar status do nivel para bloqueado.
+            LevelPreferences levelPreferences = new LevelPreferences(getContext());
+
+            String[] levelStatus = levelPreferences.getLevelStatusPreferences();
+            levelStatus[grasp.getLevel().getLevel() - 1] = getString(R.string.LV_STATUS_DISABLED);
+            levelPreferences.setLevelDefaults(levelStatus);
+        }
+
+        new ReportUpload(isFinishingExercises).execute();
     }
 
     private class ReportUpload extends AsyncTask<Void, Void, Void>{

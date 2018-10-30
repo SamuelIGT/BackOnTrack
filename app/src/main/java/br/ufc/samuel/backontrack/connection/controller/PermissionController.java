@@ -9,6 +9,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import java.net.HttpURLConnection;
+import java.security.Permission;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.ufc.samuel.backontrack.connection.client.PermissionClient;
 import br.ufc.samuel.backontrack.model.Permition;
@@ -26,7 +29,8 @@ public class PermissionController extends ConnectionController {
         this.gson = new Gson();
     }
 
-    public Permition[] getExercises(Context context) {
+    public Map<String, Permition[]> getExercises(Context context) {
+        HashMap<String, Permition[]> permitionResponse = new HashMap<>();
         if(checkInternetConnection(context)){
             String[] response = {"", ""};
             Permition[] permission;
@@ -69,12 +73,20 @@ public class PermissionController extends ConnectionController {
                 }
 
                 Log.d("PERMITION Controller: ", "" + permission[0].getGrasp().getExercise().getTitle());
-                return permission/*graspList*/;
+                if(permission.length == 0){
+
+                    permitionResponse.put("Usuário não possui exercícios cadastrados", permission);
+                    return permitionResponse;
+                }
+                permitionResponse.put("Sucesso", permission);
+                return permitionResponse/*graspList*/;
             } else {
-                Log.d("GRASP RESPONSE: ", "ERROR");
+                permission = new Permition[]{};
+                permitionResponse.put("Falha na requisição: " + response[0], permission);
+                return permitionResponse;
             }
         }
-
-        return null;
+        permitionResponse.put("Sem conexão com a internet", null);
+        return permitionResponse;
     }
 }

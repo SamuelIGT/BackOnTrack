@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -19,6 +20,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -44,6 +46,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     private ValueAnimator pgBarOutlineAnim;
     private Grasp currentExercise;
     private Progress progress;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +71,27 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
         //int intExtra = getIntent().getIntExtra(getString(R.string.LEVEL_NUMBER), -1);
         prepareVideo();
         //String videopath = Environment.getExternalStorageDirectory().getPath()+getString(R.string.exercise_videos_rootPath)+ intExtra +"/"+"ex"+(intExtra+1)+".mp4";
-
+        toolbarTitle = findViewById(R.id.toolbarText);
+        toolbarTitle.setText(currentExercise.getExercise().getTitle());
 
         showExerciseStartDialog();//shows the exercises start dialog
 //        mediaController.show();//shows the Media Controller HUD
-
     }
 
     private void prepareVideo() {
         progress = Progress.findById(Progress.class, 1);
-        long currentExerciseId = progress.getExercisesQueue().get(0);//TODO: Verificar se ainda existem exercicios na fila.
+        long currentExerciseId = progress.getExercisesQueue().get(0);
 
         Log.d("CurrentExerciseID", "prepareVideo: "+ currentExerciseId);
 
         currentExercise = Grasp.find(Grasp.class, "id = ?", ""+currentExerciseId).get(0);
 
-        videoView.setVideoPath(currentExercise.getExercise().getMidia().getPathVideo());
+        Log.d("CurrentExerciseTitle", "prepareVideo: "+ currentExercise.getExercise().getTitle());
+        Log.d("VideoPath", "prepareVideo: "+ currentExercise.getExercise().getMidia().getPathVideo());
+
+        Uri videoUri = Uri.fromFile(new File(currentExercise.getExercise().getMidia().getPathVideo()));
+        videoView.setVideoURI(videoUri);
+        //videoView.setVideoPath(currentExercise.getExercise().getMidia().getPathVideo()); //TODO: Usar content Provider.
         videoView.seekTo(100);
     }
 
@@ -99,9 +107,14 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
     }
 
     private void showExerciseStartDialog() {
-        //TODO: Adicionar dinamicamente checkbox de objetos para realizaçao do exercicio.
-        ExerciseStartDialogFragment dialogFragment = new ExerciseStartDialogFragment();
-        dialogFragment .show(getSupportFragmentManager(), "Dialog Exercise Start");
+        int numOfObjects = currentExercise.getExercise().getObjects().size();
+        String[] objects = new String[numOfObjects];
+        for(int i = 0; i < currentExercise.getExercise().getObjects().size(); i++){
+            objects[i] = currentExercise.getExercise().getObjects().get(i).getName();
+        }
+
+        ExerciseStartDialogFragment dialogFragment = ExerciseStartDialogFragment.newInstance(objects, getString(R.string.ARGS_EXERCISE_START_DIALOG));
+        dialogFragment.show(getSupportFragmentManager(), "Dialog Exercise Start");
     }
 
     private void initializeVectorDrawableAnimations() {

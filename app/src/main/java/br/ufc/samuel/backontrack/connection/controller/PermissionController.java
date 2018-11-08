@@ -69,13 +69,14 @@ public class PermissionController extends ConnectionController {
                     //permission = gson.fromJson(response[1], Permition[].class);
                 } catch (IllegalStateException | JsonSyntaxException exception) {
                     exception.printStackTrace();
-                    return null;
+                    permitionResponse.put("Erro! O sistema falhou ao tentar trabalhar com os dados retornados pelo serviço." , null);
+                    return permitionResponse;
                 }
 
                 Log.d("PERMITION Controller: ", "" + permission[0].getGrasp().getExercise().getTitle());
                 if(permission.length == 0){
 
-                    permitionResponse.put("Usuário não possui exercícios cadastrados", permission);
+                    permitionResponse.put("Usuário não possui exercícios cadastrados", null);
                     return permitionResponse;
                 }
                 permitionResponse.put("Sucesso", permission);

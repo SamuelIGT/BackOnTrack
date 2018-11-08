@@ -4,20 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
 
-import java.lang.reflect.Type;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.HttpURLConnection;
 
 import br.ufc.samuel.backontrack.connection.client.ReportClient;
-import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Report;
 
 /**
@@ -37,15 +30,18 @@ public class ReportController extends ConnectionController {
             String[] response;
             Boolean reportSended = false;
 
-            JsonElement reportJsonElement = gson.toJsonTree(report);
+            //JsonElement reportJsonElement = gson.toJsonTree(report);
 
-            String serializedReport = gson.toJson(formatJson(reportJsonElement));
+            //String serializedReport = gson.toJson(setReportRequestBodyObject(reportJsonElement));//reportJsonElement.getAsJsonObject();
+
+            setReportRequestBodyObject(report);
+            Log.d("SERIALIZED_REPORT: ", gson.toJson(report));
 
             ReportClient client = new ReportClient(url);
 
             String token = getToken().getToken();
 
-            response = client.postReport(serializedReport, token);
+            response = client.postReport(report, token);
 
             if (response[0].equals("" + HttpURLConnection.HTTP_OK)) {
                 reportSended = true;
@@ -59,8 +55,13 @@ public class ReportController extends ConnectionController {
         }
         return false;
     }
+    private void setReportRequestBodyObject(Report report) {
+        report.getPermition().setId(report.getPermition().getPermitionId());
+        report.getPermition().getGrasp().setId(report.getPermition().getGrasp().getGraspId());
+        report.getPermition().getPatient().setId(report.getPermition().getPatient().getPatientId());
+    }
 
-    private JsonObject formatJson(JsonElement reportJsonElement) {
+/*    private JsonObject setReportRequestBodyObject(JsonElement reportJsonElement) {
         JsonObject jsonObject = reportJsonElement.getAsJsonObject();
         Long id;
 
@@ -80,6 +81,6 @@ public class ReportController extends ConnectionController {
         jsonObject.get("permition").getAsJsonObject().get("patient").getAsJsonObject().remove("patientId");
 
         return jsonObject;
-    }
+    }*/
 
 }

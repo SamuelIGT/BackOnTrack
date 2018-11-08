@@ -291,9 +291,6 @@ public class LevelsFragment extends Fragment{
 
                         downloadVideos();
 
-                        //TODO: chamar AsyncTask para fazer requisição dos dados.
-                        // new LevelDownloadTask(/*grasp*/).execute();
-
                     } else {
                         Log.d("Tem permissão?  ", "NÃO");
                         // Request permission from the user
@@ -466,8 +463,7 @@ public class LevelsFragment extends Fragment{
                     if(i != 0){//If is not a "Sucess" (first element of the vector)
                         Toast.makeText(rootView.getContext(), requestMessages[i], Toast.LENGTH_LONG);
                     }
-
-                    return;
+                    break;
                 }
             }
 

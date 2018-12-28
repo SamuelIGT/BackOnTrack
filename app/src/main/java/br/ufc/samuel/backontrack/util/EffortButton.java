@@ -37,7 +37,7 @@ public class EffortButton {
         this.isSelected = false;
     }
 
-    public void select(Context context, List<EffortButton> btnList) {
+    public boolean select(Context context, List<EffortButton> btnList) {
         if (!isSelected) {
             //showAll(btnList, context);//shows all the icons texts
             setDefaultButton(btnList, context); //sets all icons to the default state(deselected)
@@ -46,12 +46,16 @@ public class EffortButton {
 //            DrawableCompat.setTint(btn.getDrawable(), ContextCompat.getColor(context, R.color.colorSuccess));
             title.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
 
+            return true;
+
         } else {
             showAll(btnList, context);
 //            DrawableCompat.setTint(btn.getDrawable(), ContextCompat.getColor(context, R.color.colorSuccess));
             getTitle().setTextColor(ContextCompat.getColor(context, R.color.color_borg_scale_subtitle));
             setSelected(false);
             playIconAnimation(context);
+
+            return false;
 
         }
     }

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -78,6 +79,12 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
 //        mediaController.show();//shows the Media Controller HUD
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private void prepareVideo() {
         progress = Progress.findById(Progress.class, 1);
         long currentExerciseId = progress.getExercisesQueue().get(0);
@@ -114,6 +121,7 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
         }
 
         ExerciseStartDialogFragment dialogFragment = ExerciseStartDialogFragment.newInstance(objects, getString(R.string.ARGS_EXERCISE_START_DIALOG));
+        dialogFragment.setCancelable(false);
         dialogFragment.show(getSupportFragmentManager(), "Dialog Exercise Start");
     }
 

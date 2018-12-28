@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,6 +65,7 @@ public class FeedbackDialogFragment extends DialogFragment {
     private Progress progress;
     private Long graspId;
     private Report report;
+    private boolean hasSelectedEffortLevel = false;
 
     public FeedbackDialogFragment() {}
 
@@ -148,7 +150,7 @@ public class FeedbackDialogFragment extends DialogFragment {
             effortButtons.get(i).getBtn().setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     // setDefaultButton(btnList.get(0), btnList);
-                    effortButtons.get(j).select(rootView.getContext(), effortButtons);
+                    hasSelectedEffortLevel = effortButtons.get(j).select(rootView.getContext(), effortButtons);
                     int effortLevel = effortButtons.get(j).getLevel();
                     report.setEffortLevel(effortLevel);
                 }
@@ -159,6 +161,8 @@ public class FeedbackDialogFragment extends DialogFragment {
         cardButtonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 final View myView = rootView.findViewById(R.id.card_feedback_alert);
 
                 Animator anim = getRevealAnimator(myView, feedbackAlert, false);
@@ -193,59 +197,67 @@ public class FeedbackDialogFragment extends DialogFragment {
         feedbackConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View myView = rootView.findViewById(R.id.card_feedback_confirmation);
-                myView.setVisibility(View.VISIBLE);
-                getRevealAnimator(myView, feedbackConfirmButton, true).start();
 
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        final TextView mainText1 = rootView.findViewById(R.id.main_text_card_feedback_confirmation);
-                        TextView secondaryText = rootView.findViewById(R.id.secondary_text_card_feedback_confirmation);
-                        ImageView imageView = rootView.findViewById(R.id.imageView_card_feedback_confirmation);
+                if(hasSelectedEffortLevel){
 
-                        final Animation slideAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_msg_anim);
-                        mainText1.startAnimation(slideAnimation);
-                        secondaryText.startAnimation(slideAnimation);
-                        imageView.startAnimation(slideAnimation);
+                    FeedbackDialogFragment.this.setCancelable(false);
+                    View myView = rootView.findViewById(R.id.card_feedback_confirmation);
+                    myView.setVisibility(View.VISIBLE);
+                    getRevealAnimator(myView, feedbackConfirmButton, true).start();
 
-                        slideAnimation.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            final TextView mainText1 = rootView.findViewById(R.id.main_text_card_feedback_confirmation);
+                            TextView secondaryText = rootView.findViewById(R.id.secondary_text_card_feedback_confirmation);
+                            ImageView imageView = rootView.findViewById(R.id.imageView_card_feedback_confirmation);
 
-                            }
+                            final Animation slideAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_msg_anim);
+                            mainText1.startAnimation(slideAnimation);
+                            secondaryText.startAnimation(slideAnimation);
+                            imageView.startAnimation(slideAnimation);
 
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                //LinearLayout buttonsLayout = rootView.findViewById(R.id.layout_feedback_confirmation);
-                                View divisorLine = rootView.findViewById(R.id.view_divisor_line);
+                            slideAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
 
-                                divisorLine.setVisibility(View.VISIBLE);
-                                feedbackYes.setVisibility(View.VISIBLE);
-                                feedbackNo.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    //LinearLayout buttonsLayout = rootView.findViewById(R.id.layout_feedback_confirmation);
+                                    View divisorLine = rootView.findViewById(R.id.view_divisor_line);
+
+                                    divisorLine.setVisibility(View.VISIBLE);
+                                    feedbackYes.setVisibility(View.VISIBLE);
+                                    feedbackNo.setVisibility(View.VISIBLE);
 
 //                                buttonsLayout.setVisibility(View.VISIBLE);
-                                Animation slideToLeftAnim = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_options_title_anim);
-                                Animation zoomAnim = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_options_anim);
-                                Animation slideLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_divisor_line_anim);
+                                    Animation slideToLeftAnim = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_options_title_anim);
+                                    Animation zoomAnim = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_options_anim);
+                                    Animation slideLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.feedback_confirmation_divisor_line_anim);
 
-                                divisorLine.startAnimation(slideLeftAnimation);
-                                mainText1.setText("Deseja continuar fazendo os exercícios?");
-                                mainText1.startAnimation(slideToLeftAnim);
+                                    divisorLine.startAnimation(slideLeftAnimation);
+                                    mainText1.setText("Deseja continuar fazendo os exercícios?");
+                                    mainText1.startAnimation(slideToLeftAnim);
 
-                                feedbackYes.startAnimation(zoomAnim);
-                                feedbackNo.startAnimation(zoomAnim);
+                                    feedbackYes.startAnimation(zoomAnim);
+                                    feedbackNo.startAnimation(zoomAnim);
 
-                            }
+                                }
 
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
 
-                            }
-                        });
-                    }
-                }, 3000);
+                                }
+                            });
+                        }
+                    }, 3000);
+
+                }else
+                    Toast.makeText(getContext(), "Avalie o seu nível de esfoço antes de confirmar.", Toast.LENGTH_SHORT).show();
+
 
             }
         });

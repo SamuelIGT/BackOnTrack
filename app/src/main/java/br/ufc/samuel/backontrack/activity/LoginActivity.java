@@ -110,16 +110,15 @@ public class LoginActivity extends AppCompatActivity {
         }
         if (!registration.equals("")) {
             if (!password.equals("")) {
-//                registration = "2018102118340";//TODO: Apagar essa linha.
-//                password = "2018102118340";//TODO: Apagar essa linha.
 
                 loading.setVisibility(View.VISIBLE);//Mostrar Barra de progresso circular.
                 new LoginTask(registration, password).execute();
-                Log.d("loginresponse", "teste");
             }else {
+                Toast.makeText(this, "Digite uma senha.", Toast.LENGTH_SHORT).show();
                 edtPassword.requestFocus();
             }
         }else {
+            Toast.makeText(this, "Digite o login.", Toast.LENGTH_SHORT).show();
             edtRegistration.requestFocus();
         }
     }
@@ -202,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
             }else{
                 //If some error occur
                 Log.d("LOGIN RESPONSE: ", loginResponse);
-                Toast.makeText(LoginActivity.this, "Ocorreu algum erro no login. Tente novamente.", Toast.LENGTH_LONG);
+                Toast.makeText(LoginActivity.this, "Ocorreu uma falha ao iniciar a sessão. Verifique se o login ou a senha estão corretos e tente novamente.", Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -1,6 +1,7 @@
 package br.ufc.samuel.backontrack.fragments;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -66,6 +67,7 @@ public class FeedbackDialogFragment extends DialogFragment {
     private Long graspId;
     private Report report;
     private boolean hasSelectedEffortLevel = false;
+    private int currentLevel;
 
     public FeedbackDialogFragment() {}
 
@@ -338,12 +340,12 @@ public class FeedbackDialogFragment extends DialogFragment {
         progress.setExercisesQueue(exercisesQueue);
         progress.save();
 
-        if(exercisesQueue.size() == 0){
-            //TODO: Mudar status do nivel para bloqueado.
+        if(exercisesQueue.isEmpty()){
+            currentLevel = grasp.getLevel().getLevel() - 1;
             LevelPreferences levelPreferences = new LevelPreferences(getContext());
 
             String[] levelStatus = levelPreferences.getLevelStatusPreferences();
-            levelStatus[grasp.getLevel().getLevel() - 1] = getString(R.string.LV_STATUS_DISABLED);
+            levelStatus[currentLevel] = getString(R.string.LV_STATUS_DISABLED);
             levelPreferences.setLevelDefaults(levelStatus);
         }
 
@@ -383,9 +385,16 @@ public class FeedbackDialogFragment extends DialogFragment {
             progress.save();
 
             if(!isFinishingExercises){
-                Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
-                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(intent);
+                if(progress.getExercisesQueue().isEmpty()){
+                    Intent intent = new Intent();
+                    intent.putExtra(getString(R.string.EMPTY_QUEUE_INTENT), currentLevel);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    Toast.makeText(getContext(), "Não há mais nenhum exercício para realizar.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
+                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                }
             }
 
             dismiss();

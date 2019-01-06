@@ -38,5 +38,5 @@
     <string name="PERMITION_REQUEST_SUCESS">Sucesso</string>
     <string name="PERMITION_REQUEST_ERRO1">Usuário não possui exercícios cadastrados</string>
     <string name="PERMITION_REQUEST_ERRO2">Sem conexão com a internet</string>
-
+    <string name="EMPTY_QUEUE_INTENT">EMPTY_QUEUE_INTENT</string>
 </resources>

@@ -70,8 +70,9 @@ public class Progress extends SugarRecord {
     @Override
     public long save() {
         Gson gson = new Gson();
-        serializedExerciseQueue = gson.toJson(exercisesQueue);
-        serializedReportsQueue = gson.toJson(reportSubmissionQueue);
+
+        serializedExerciseQueue = (exercisesQueue == null) ? serializedExerciseQueue : gson.toJson(exercisesQueue);
+        serializedReportsQueue = (reportSubmissionQueue == null) ? serializedReportsQueue : gson.toJson(reportSubmissionQueue);
         return super.save();
     }
 

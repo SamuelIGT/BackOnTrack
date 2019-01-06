@@ -1,6 +1,7 @@
 package br.ufc.samuel.backontrack.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,8 +32,10 @@ import com.liulishuo.okdownload.core.listener.DownloadListener1;
 import com.liulishuo.okdownload.core.listener.assist.Listener1Assist;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.io.File;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +45,13 @@ import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
 import br.ufc.samuel.backontrack.activity.LoginActivity;
 import br.ufc.samuel.backontrack.connection.controller.PermissionController;
 import br.ufc.samuel.backontrack.connection.controller.ReportController;
+import br.ufc.samuel.backontrack.model.Exercise;
 import br.ufc.samuel.backontrack.model.Grasp;
+import br.ufc.samuel.backontrack.model.Level;
+import br.ufc.samuel.backontrack.model.Midia;
 import br.ufc.samuel.backontrack.model.Permition;
 import br.ufc.samuel.backontrack.model.Progress;
+import br.ufc.samuel.backontrack.model.Recommendation;
 import br.ufc.samuel.backontrack.model.Report;
 import br.ufc.samuel.backontrack.model.Token;
 import br.ufc.samuel.backontrack.util.DownloadUtils;
@@ -92,8 +99,9 @@ public class LevelsFragment extends Fragment{
 
         downloadsCompleted = new ArrayList<>();
 
-        new LevelDownloadTask(this).execute();
-        //TODO: Chamar new ReportUpload().execute;
+        if(!checkReportQueue()){
+            new LevelDownloadTask().execute();
+        }
 
         //TODO:Verificar se algum nivel foi desbloqueado(servidor).
 
@@ -275,7 +283,7 @@ public class LevelsFragment extends Fragment{
                     Intent intent = new Intent(rootView.getContext(), ExerciseExecutionActivity.class);
 //                    intent.putExtra(getString(R.string.LEVEL_NUMBER), index+1);
                     intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
+                    startActivityForResult(intent, Activity.RESULT_FIRST_USER);//TODO: Definir uma constante especifica.
                 }
             });
         }
@@ -389,10 +397,15 @@ public class LevelsFragment extends Fragment{
                             exerciseQueue.add(grasp[i].getId());
                         }
 
-                        userProgress = new Progress(exerciseQueue);
+                        if(userProgress == null){
+                            userProgress = new Progress(exerciseQueue);
+                        }else{
+                            userProgress.setExercisesQueue(exerciseQueue);
+                            userProgress.setMaxProgress(exerciseQueue.size());
+                        }
 
-                        long id = userProgress.save();
-                        Log.d("UserProgress", "Exercise: "+Progress.findById(Progress.class, id));
+                        userProgress.save();
+//                        Log.d("UserProgress", "Exercise: "+Progress.findById(Progress.class, id));
                         levelPreferences.setLevelDefaults(levelStatus);//sets the preferences
                         playProgressBarAnimation(true);
                         btnLv[currentDownloadingLevel].setEnabled(true);
@@ -414,6 +427,44 @@ public class LevelsFragment extends Fragment{
         return listener;
     }
 
+    private boolean checkReportQueue(){
+        List<Report> reportSubmissionQueue;
+
+        userProgress = Progress.findById(Progress.class, 1);
+
+        if(userProgress != null){
+            reportSubmissionQueue = userProgress.getReportSubmissionQueue();
+
+            if(reportSubmissionQueue != null){
+                if(!reportSubmissionQueue.isEmpty()){
+                    loadingLayout.setVisibility(View.VISIBLE);
+                    new ReportUpload(reportSubmissionQueue).execute();
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private void DeleteOldLevel(){
+        Grasp.deleteAll(Grasp.class);
+        Level.deleteAll(Level.class);
+        Recommendation.deleteAll(Recommendation.class);
+        Exercise.deleteAll(Exercise.class);
+        Midia.deleteAll(Midia.class);
+
+        //Deleting the whole folder
+        File dir = DownloadUtils.getParentFile(getContext(), getString(R.string.exercise_videos_rootPath)+""+(currentDownloadingLevel+1)+"/");
+        if(dir.isDirectory()){
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++)
+            {
+                new File(dir, children[i]).delete();
+            }
+        }
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -429,18 +480,30 @@ public class LevelsFragment extends Fragment{
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case Activity.RESULT_FIRST_USER:
+//                if(resultCode == Activity.RESULT_OK) {
+                //int index = data.getIntExtra(getString(R.string.EMPTY_QUEUE_INTENT), 0);
+                int index = Arrays.asList(levelStatus).indexOf(getString(R.string.LV_STATUS_ENABLED));
+                levelStatus = levelPreferences.getLevelStatusPreferences();
+                if (index >= 0) {
+                    updateLevelStatus(index);
+                }
+//                }
+                break;
+        }
 
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     //---------------------------LEVEL DOWNLOAD ASYNCTASK---------------------------------------\\
     private class LevelDownloadTask extends AsyncTask<Void, Void, Void> {
-        private Fragment fragment;
         private Permition[] permitions;
         private String errorMessage;
         private Map<String, Permition[]> permitionResponse;
 
-        public LevelDownloadTask(Fragment fragment){
-                    this.fragment = fragment;
-        }
         @Override
         protected Void doInBackground(Void... voids) {
             PermissionController controller = new PermissionController();
@@ -499,10 +562,27 @@ public class LevelsFragment extends Fragment{
             }
         }
 
+        private boolean verifyLevelHasChanged(int currentLevel){
+            Grasp existingGrasp = Grasp.findById(Grasp.class, 1);
+            if(existingGrasp != null){
+                if(existingGrasp.getLevel().getLevel() != currentLevel){
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void manageResponseData() {
+            boolean hasLevelChanged = false;
+
             if (permitions != null) {
 
                 grasp = new Grasp[permitions.length];
+                hasLevelChanged = verifyLevelHasChanged(permitions[0].getGrasp().getLevel().getLevel());
+                if (hasLevelChanged){
+                    DeleteOldLevel();
+
+                }
 
                 Log.d("PATIENT_SAVE", "NAME: "+permitions[0].getPatient().getName());
                 permitions[0].getPatient().save();//saves the patient data.
@@ -539,22 +619,21 @@ public class LevelsFragment extends Fragment{
 
     private class ReportUpload extends AsyncTask<Void, Void, Void>{
         private Boolean[] reportsSended;
-        private Progress progress;
-        List<Report> reportSubmissionQueue;
+        private List<Report> reportSubmissionQueue;
+
+        public ReportUpload(List<Report> reportSubmissionQueue){
+            this.reportSubmissionQueue = reportSubmissionQueue;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
-            loadingLayout.setVisibility(View.VISIBLE);
 
-            progress = Progress.findById(Progress.class, 1);
+            reportsSended = new Boolean[reportSubmissionQueue.size()];
+            ReportController controller = new ReportController();
 
-            if(progress != null) {
-                reportSubmissionQueue = progress.getReportSubmissionQueue();
-                reportsSended = new Boolean[reportSubmissionQueue.size()];
-                ReportController controller = new ReportController();
-
-                for (int i = 0; i < reportSubmissionQueue.size(); i++) {
-                    reportsSended[i] = controller.sendReport(reportSubmissionQueue.get(i), getContext());
-                }
+            for (int i = 0; i < reportSubmissionQueue.size(); i++) {
+                Log.d("REPORT_UPLOAD", "doInBackground: Enviando report");
+                reportsSended[i] = controller.sendReport(reportSubmissionQueue.get(i), getContext());
             }
 
             return null;
@@ -562,18 +641,22 @@ public class LevelsFragment extends Fragment{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (progress != null) {
+            if (userProgress != null) {
                 List<Report> submissionFailed = new ArrayList<>();
                 for (int i = 0; i < reportsSended.length; i++) {
                     if (!reportsSended[0]) {
                         submissionFailed.add(reportSubmissionQueue.get(i));
+                        Log.d("REPORT_UPLOAD", "onPostExecute: Envio do Report falhou!");
                     }
                 }
-                progress.setReportSubmissionQueue(submissionFailed);
+                userProgress.setReportSubmissionQueue(submissionFailed);
+                userProgress.save();
 
                 loadingLayout.setVisibility(View.GONE);
 
             }
+
+            new LevelDownloadTask().execute();
         }
     }
 }

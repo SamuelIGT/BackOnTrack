@@ -130,6 +130,10 @@ public class ExerciseExecutionActivity extends AppCompatActivity {
         avdStopToPlay = AnimatedVectorDrawableCompat.create(this, R.drawable.avd_stop_to_play);
     }
 
+    public void startVideo(){
+        videoView.start();
+    }
+
     private void findViews() {
         videoView = findViewById(R.id.videoView);
         pgBarOutline = findViewById(R.id.imgView_pgBar_outline);

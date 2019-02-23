@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.ufc.samuel.backontrack.R;
+import br.ufc.samuel.backontrack.activity.ExerciseExecutionActivity;
 
 /**
  * Created by samue on 20/01/2018.
@@ -165,6 +166,7 @@ public class ExerciseStartDialogFragment extends DialogFragment {
                     @Override
                     public void run() {
                         dismiss();
+                        ((ExerciseExecutionActivity)getActivity()).startVideo();
                     }
                 }, 450);
             }
